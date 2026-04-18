@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "SideNote",
+  "version": "1.0",
+  "description": "Write markdown notes in your browser sidebar",
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+
+  "permissions": [
+    "sidePanel"
+  ],
+
+  "action": {
+    "default_title": "Open SideNote"
+  }
+}
