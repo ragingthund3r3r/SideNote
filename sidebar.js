@@ -131,6 +131,44 @@ async function ensureStoredHandleAuthorizedWithoutPicker() {
   }
 }
 
+async function fileExists(folderHandle, name) {
+  try {
+    await folderHandle.getFileHandle(name);
+    return true;  
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return false; 
+    }
+    throw error; 
+  }
+}
+
+async function createTestMarkdownFile(folderHandle) {
+  let title = "test"
+  let extension = ".md"
+  let body = "##test"
+  let counter = 0
+  let fileHandle
+
+  let doesfileexist = await fileExists(folderHandle, title + extension);
+  
+  
+  while(doesfileexist){
+    counter +=1
+    doesfileexist = await fileExists(folderHandle, title +" "+counter+ extension);
+  }
+
+  if (counter == 0 ){
+    fileHandle = await folderHandle.getFileHandle(title + extension, { create: true });
+  }else{
+    fileHandle = await folderHandle.getFileHandle(title +" "+counter+ extension, { create: true });
+  }
+
+  const writable = await fileHandle.createWritable();
+  await writable.write(body);
+  await writable.close();
+}
+
 
 
 
@@ -144,10 +182,15 @@ async function onConfirmClick() {
     return;
   }
 
-  setStatus(`Authorized Location: ${authorizedHandle.name}`);
+  try {
+    await createTestMarkdownFile(authorizedHandle);
+    setStatus("Created File!");
 
-  // actual file create code will come here
-  closeSidePanel();
+    closeSidePanel();
+  } catch (error) {
+    console.error(error);
+    setStatus("Failed to create test.md", true);
+  }
 }
 
 async function onCancelClick() {
