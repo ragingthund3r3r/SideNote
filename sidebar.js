@@ -2,6 +2,7 @@ const DB_NAME = "sidenote-storage";
 const STORE_NAME = "keyval";
 const HANDLE_KEY = "authorizedFolderHandle";
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
+const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 
 
 async function refreshAuthorizationStatus() {
@@ -256,13 +257,22 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
 
   yaml = await replacePlaceholders(yaml)
 
+  let prefixText = readPrefixText() +"\n\n"
+
   const writable = await fileHandle.createWritable();
-  await writable.write(yaml + body);
+  await writable.write(yaml + prefixText + body);
   await writable.close();
 }
 
 
-
+function readPrefixText() {
+  try {
+    const value = localStorage.getItem(PREFIX_TEXT_STORAGE_KEY) || "";
+    return value
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 
 

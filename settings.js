@@ -1,7 +1,14 @@
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
+const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
+function setPrefixSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("prefixSaveStatus");
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
@@ -98,7 +105,34 @@ function loadMetadataRows() {
   }
 }
 
+function savePrefixText() {
+  try {
+    const prefixTextInput = document.getElementById("prefixTextInput");
+    const value = prefixTextInput ? prefixTextInput.value : "";
+    localStorage.setItem(PREFIX_TEXT_STORAGE_KEY, value);
+    setPrefixSaveStatus("Prefix text saved.");
+  } catch (error) {
+    console.error(error);
+    setPrefixSaveStatus("Failed to save prefix text.", true);
+  }
+}
+
+function loadPrefixText() {
+  try {
+    const value = localStorage.getItem(PREFIX_TEXT_STORAGE_KEY) || "";
+    const prefixTextInput = document.getElementById("prefixTextInput");
+    if (prefixTextInput) {
+      prefixTextInput.value = value;
+    }
+  } catch (error) {
+    console.error(error);
+    setPrefixSaveStatus("Failed to load prefix text.", true);
+  }
+}
+
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
+document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
 
 loadMetadataRows();
+loadPrefixText();

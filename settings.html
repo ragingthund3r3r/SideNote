@@ -74,6 +74,19 @@
       box-sizing: border-box;
     }
 
+    textarea {
+      border: 1px solid #3e3e3e;
+      background: #2a2a2a;
+      color: #f2f2f2;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 120px;
+      resize: vertical;
+    }
+
     .checkbox-wrap {
       display: flex;
       justify-content: center;
@@ -106,6 +119,13 @@
       min-height: 16px;
     }
 
+    #prefixSaveStatus {
+      color: #9fd59f;
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
   </style>
 </head>
 <body>
@@ -130,6 +150,16 @@
       <button id="saveMetadataBtn" type="button">Save</button>
     </div>
     <div id="saveStatus"></div>
+  </section>
+
+  <section class="section" aria-labelledby="prefix-text-title">
+    <h2 id="prefix-text-title" class="section-title">Prefix Text</h2>
+    <p>This text will be prefixed to all the notes:</p>
+    <textarea id="prefixTextInput" placeholder="Type reusable text here..."></textarea>
+    <div class="actions">
+      <button id="savePrefixTextBtn" type="button">Save</button>
+    </div>
+    <div id="prefixSaveStatus"></div>
   </section>
 
   <script src="settings.js"></script>
