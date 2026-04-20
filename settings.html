@@ -26,12 +26,113 @@
       font-size: 14px;
     }
 
+    .section {
+      border: 1px solid #3e3e3e;
+      border-radius: 8px;
+      padding: 12px;
+      background: #242424;
+      margin-top: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      color: #e5e5e5;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) minmax(0, 3fr) 88px;
+
+      gap: 8px;
+      align-items: center;
+    }
+
+    .meta-header {
+      color: #b3b3b3;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .meta-row {
+      margin-bottom: 8px;
+    }
+
+    .row-delete-btn {
+      width: 100%;
+      padding: 8px 6px;
+    }
+
+    input[type="text"] {
+      border: 1px solid #3e3e3e;
+      background: #2a2a2a;
+      color: #f2f2f2;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .checkbox-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 1px solid #3e3e3e;
+      background: #2a2a2a;
+      color: #f2f2f2;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #343434;
+    }
+
+    #saveStatus {
+      color: #9fd59f;
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
   </style>
 </head>
 <body>
 
   <h1> Settings</h1>
-  <p>The settings page</p>
+  <section class="section" aria-labelledby="metadata-title">
+    <h2 id="metadata-title" class="section-title">Metadata Fields</h2>
+    <br><br>
+
+    <div class="meta-grid meta-header">
+      <div></div>
+      <div>Field</div>
+      <div>Value</div>
+      <div></div>
+    </div>
+
+    <div id="metadataRows"></div>
+
+    <br>
+    <div class="actions">
+      <button id="addMetadataRowBtn" type="button">Add Metadata Row</button>
+      <button id="saveMetadataBtn" type="button">Save</button>
+    </div>
+    <div id="saveStatus"></div>
+  </section>
+
+  <script src="settings.js"></script>
 
 
 

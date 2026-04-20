@@ -54,6 +54,39 @@
     textarea:focus {
       border-color: #5f9cff;
     }
+    .meta-section {
+      border: 1px solid #3e3e3e;
+      border-radius: 8px;
+      background: #242424;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .meta-section-title {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #e5e5e5;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) minmax(0, 3fr);
+      gap: 8px;
+      align-items: center;
+    }
+    .meta-header {
+      color: #b3b3b3;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .meta-row {
+      margin-bottom: 8px;
+    }
+    .checkbox-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .meta-key-readonly {
+      opacity: 0.85;
+    }
     button {
       border: 1px solid #3e3e3e;
       background: #2a2a2a;
@@ -89,6 +122,20 @@
   <div class="form-group">
     <input id="fileTitleInput" type="text" placeholder="Enter file title" />
   </div>
+
+  <details>
+    <summary id="metadata-title" class="meta-section-title">Metadata</summary>
+    <section class="meta-section" aria-labelledby="metadata-title">
+      <div class="meta-grid meta-header">
+        <div></div>
+        <div>Field</div>
+        <div>Value</div>
+      </div>
+      <div id="sidebarMetadataRows"></div>
+    </section>
+  </details>
+
+
   <div class="form-group">
     <textarea id="fileBodyInput" placeholder="Enter file content"></textarea>
   </div>

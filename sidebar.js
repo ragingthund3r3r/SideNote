@@ -1,6 +1,7 @@
 const DB_NAME = "sidenote-storage";
 const STORE_NAME = "keyval";
 const HANDLE_KEY = "authorizedFolderHandle";
+const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 
 
 async function refreshAuthorizationStatus() {
@@ -143,6 +144,60 @@ async function fileExists(folderHandle, name) {
   }
 }
 
+function createSidebarMetadataRow(data = { enabled: true, key: "", value: "" }) {
+  const row = document.createElement("div");
+  row.className = "meta-grid meta-row";
+
+  const checkboxWrap = document.createElement("div");
+  checkboxWrap.className = "checkbox-wrap";
+
+  const enabledInput = document.createElement("input");
+  enabledInput.type = "checkbox";
+  enabledInput.className = "meta-enabled";
+  enabledInput.checked = Boolean(data.enabled);
+  checkboxWrap.appendChild(enabledInput);
+
+  const keyInput = document.createElement("div");
+  keyInput.className = "meta-key meta-key-readonly";
+  keyInput.textContent = data.key || "";
+
+  const valueInput = document.createElement("input");
+  valueInput.type = "text";
+  valueInput.className = "meta-value";
+  valueInput.value = data.value || "";
+
+  row.appendChild(checkboxWrap);
+  row.appendChild(keyInput);
+  row.appendChild(valueInput);
+
+  return row;
+}
+
+function loadSidebarMetadataRows() {
+  const container = document.getElementById("sidebarMetadataRows");
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  try {
+    const raw = localStorage.getItem(METADATA_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return;
+    }
+
+    parsed.forEach((item) => {
+      container.appendChild(createSidebarMetadataRow(item));
+    });
+  } catch (error) {
+    console.error(error);
+    setStatus("Failed to load metadata from settings.", true);
+  }
+}
+
 async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
   let title = paramtitle
   let extension = ".md"
@@ -168,8 +223,39 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
     fileHandle = await folderHandle.getFileHandle(title +" "+counter+ extension, { create: true });
   }
 
+  let yaml = "---\n"
+  let allMetaRows = document.getElementsByClassName("meta-row")
+  for(let row of allMetaRows){
+    let rowData = ""
+    let checkbox = row.querySelector(".meta-enabled");
+
+    if (checkbox) {
+      if (checkbox.checked) {
+        console.log("Checked");
+        let keyEl = row.querySelector(".meta-key") ?? ""
+        let keyData = keyEl ? keyEl.textContent : "";
+
+        rowData= rowData + keyData + ":"
+
+        let valueEl = row.querySelector(".meta-value");
+        let valueData = valueEl ? valueEl.value.trim() : "";
+
+        if (valueData.includes("\n")){
+          valueData = valueData.replace(/\r?\n/g, "\n  ");
+          rowData= rowData + " |-\n" + valueData + "\n"
+
+        }else{
+          rowData= rowData + " " + valueData + "\n"
+        }
+        yaml = yaml + rowData        
+      }
+    }
+  }
+  yaml = yaml + "---\n\n"
+
+
   const writable = await fileHandle.createWritable();
-  await writable.write(body);
+  await writable.write(yaml + body);
   await writable.close();
 }
 
@@ -235,3 +321,4 @@ document.getElementById("placeholderBtn").addEventListener("click", onSettingsCl
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
 refreshAuthorizationStatus();
+loadSidebarMetadataRows();
