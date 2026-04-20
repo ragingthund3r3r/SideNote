@@ -22,13 +22,13 @@ function createMetadataRow(data = { enabled: true, key: "", value: "" }) {
   const keyInput = document.createElement("input");
   keyInput.type = "text";
   keyInput.className = "meta-key";
-  keyInput.placeholder = "e.g. created";
+  keyInput.placeholder = "Field";
   keyInput.value = data.key || "";
 
   const valueInput = document.createElement("input");
   valueInput.type = "text";
   valueInput.className = "meta-value";
-  valueInput.placeholder = "e.g. YYYY-MM-DD";
+  valueInput.placeholder = "Default Value";
   valueInput.value = data.value || "";
 
   const deleteBtn = document.createElement("button");

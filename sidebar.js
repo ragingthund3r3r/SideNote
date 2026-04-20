@@ -208,6 +208,7 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
   if(title == ""){
     title ="Untitled"
   }
+  title = await replacePlaceholders(title)
 
   let doesfileexist = await fileExists(folderHandle, title + extension);
   
@@ -253,6 +254,7 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
   }
   yaml = yaml + "---\n\n"
 
+  yaml = await replacePlaceholders(yaml)
 
   const writable = await fileHandle.createWritable();
   await writable.write(yaml + body);
@@ -315,6 +317,37 @@ function onSettingsClick() {
 function closeSidePanel() {
   window.close();
 }
+
+async function getActiveTab() {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    return tabs && tabs.length > 0 ? tabs[0] : null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+async function replacePlaceholders(template) {
+  const now = new Date();
+  const tab = await getActiveTab();
+  const safeUrl = tab?.url || "";
+  const safeTitle = tab?.title || "";
+
+  return template.replace(/\{\{(.*?)\}\}/g, (match, inner) => {
+    const key = inner.trim();
+
+    if (key === 'url') return safeUrl || match;
+    if (key === 'title') return safeTitle || match;
+
+    try {
+      return dateFns.format(now, key);
+    } catch {
+      return match;
+    }
+  });
+}
+
 
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);

@@ -13,10 +13,21 @@
   },
 
   "permissions": [
-    "sidePanel"
+    "sidePanel",
+    "tabs"
   ],
 
   "action": {
     "default_title": "Open SideNote"
-  }
+  },
+
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["date-fns.umd.min.js"],
+      "run_at": "document_idle"
+    }
+  ]
+
 }

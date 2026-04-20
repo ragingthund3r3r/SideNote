@@ -36,6 +36,14 @@
       gap: 6px;
       margin-bottom: 12px;
     }
+    .form-group-textarea {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+      height: 50vh;
+    }
+
     input,
     textarea {
       border: 1px solid #3e3e3e;
@@ -49,6 +57,16 @@
     textarea {
       min-height: 120px;
       resize: vertical;
+      height: 100%;
+    }
+    textarea {
+      overflow-y: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    textarea::-webkit-scrollbar {
+      display: none;
     }
     input:focus,
     textarea:focus {
@@ -136,7 +154,7 @@
   </details>
 
 
-  <div class="form-group">
+  <div class="form-group-textarea">
     <textarea id="fileBodyInput" placeholder="Enter file content"></textarea>
   </div>
 
@@ -147,6 +165,7 @@
 
     <button id="cancelBtn" type="button">Cancel</button>
   </div>
+  <script src="date-fns.umd.min.js"></script>
   <script src="sidebar.js"></script>
 </body>
 </html>
