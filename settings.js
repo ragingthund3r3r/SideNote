@@ -1,5 +1,6 @@
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
+const TITLE_STORAGE_KEY = "sidenote.titleText";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -9,6 +10,12 @@ function setSaveStatus(message, isError = false) {
 
 function setPrefixSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("prefixSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
+function setTitleSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("titleSaveStatus");
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
@@ -130,9 +137,39 @@ function loadPrefixText() {
   }
 }
 
+
+
+function saveTitleText() {
+  try {
+    const titleInput = document.getElementById("titleInput");
+    const value = titleInput ? titleInput.value : "";
+    localStorage.setItem(TITLE_STORAGE_KEY, value);
+    setTitleSaveStatus("Title saved.");
+  } catch (error) {
+    console.error(error);
+    setTitleSaveStatus("Failed to save title.", true);
+  }
+}
+
+function loadTitleText() {
+  try {
+    const value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
+    const titleInput = document.getElementById("titleInput");
+    if (titleInput) {
+      titleInput.value = value;
+    }
+  } catch (error) {
+    console.error(error);
+    setTitleSaveStatus("Failed to load title.", true);
+  }
+}
+
+
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
 document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
+document.getElementById("saveTitleTextBtn").addEventListener("click", saveTitleText);
 
 loadMetadataRows();
 loadPrefixText();
+loadTitleText();

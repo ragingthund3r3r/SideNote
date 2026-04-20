@@ -3,6 +3,7 @@ const STORE_NAME = "keyval";
 const HANDLE_KEY = "authorizedFolderHandle";
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
+const TITLE_STORAGE_KEY = "sidenote.titleText";
 
 
 async function refreshAuthorizationStatus() {
@@ -275,6 +276,17 @@ function readPrefixText() {
 }
 
 
+function loadTitleText() {
+  try {
+    const value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
+    const titleInput = document.getElementById("fileTitleInput");
+    if (titleInput) {
+      titleInput.value = value;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 
 
@@ -364,4 +376,5 @@ document.getElementById("placeholderBtn").addEventListener("click", onSettingsCl
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
 refreshAuthorizationStatus();
+loadTitleText();
 loadSidebarMetadataRows();
