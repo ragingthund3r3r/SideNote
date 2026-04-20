@@ -30,6 +30,30 @@
       color: #b3b3b3;
       font-size: 14px;
     }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    input,
+    textarea {
+      border: 1px solid #3e3e3e;
+      background: #2a2a2a;
+      color: #f2f2f2;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    input:focus,
+    textarea:focus {
+      border-color: #5f9cff;
+    }
     button {
       border: 1px solid #3e3e3e;
       background: #2a2a2a;
@@ -62,10 +86,12 @@
     <button id="placeholderBtn" type="button">Settings</button>
   </div>
   <h1>📝 SideNote</h1>
-
-
-  <p>File Title here</p>
-  <p>File Body here</p>
+  <div class="form-group">
+    <input id="fileTitleInput" type="text" placeholder="Enter file title" />
+  </div>
+  <div class="form-group">
+    <textarea id="fileBodyInput" placeholder="Enter file content"></textarea>
+  </div>
 
   <div class="bottom-bar">
     <button id="confirmBtn" type="button">Create</button>

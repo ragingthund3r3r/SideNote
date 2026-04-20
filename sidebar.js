@@ -143,12 +143,16 @@ async function fileExists(folderHandle, name) {
   }
 }
 
-async function createTestMarkdownFile(folderHandle) {
-  let title = "test"
+async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
+  let title = paramtitle
   let extension = ".md"
-  let body = "##test"
+  let body = parambody
   let counter = 0
   let fileHandle
+
+  if(title == ""){
+    title ="Untitled"
+  }
 
   let doesfileexist = await fileExists(folderHandle, title + extension);
   
@@ -177,13 +181,28 @@ async function createTestMarkdownFile(folderHandle) {
 
 
 async function onConfirmClick() {
+  const titleInput = document.getElementById("fileTitleInput");
+  const bodyInput = document.getElementById("fileBodyInput");
+
+  const typedTitle = titleInput ? titleInput.value : "";
+  const typedBody = bodyInput ? bodyInput.value : "";
+
+  console.log("Typed title:", typedTitle);
+  console.log("Typed body:", typedBody);
+
+  if(typedBody == ""){
+    setStatus("File Body is empty...", true);
+    return
+  }
+
+
   const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
   if (!authorizedHandle) {
     return;
   }
 
   try {
-    await createTestMarkdownFile(authorizedHandle);
+    await createMarkdownFile(authorizedHandle, typedTitle, typedBody);
     setStatus("Created File!");
 
     closeSidePanel();
