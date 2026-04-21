@@ -4,6 +4,7 @@ const HANDLE_KEY = "authorizedFolderHandle";
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
+const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 
 
 async function refreshAuthorizationStatus() {
@@ -337,7 +338,16 @@ function onSettingsClick() {
 }
 
 function closeSidePanel() {
-  window.close();
+
+  let value = localStorage.getItem(COLLAPSE_FLAG_STORAGE_KEY);
+      
+  let flag = value === "true";
+
+  if(!flag){
+    window.close();
+
+  }
+
 }
 
 async function getActiveTab() {

@@ -1,6 +1,7 @@
 const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
+const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -16,6 +17,12 @@ function setPrefixSaveStatus(message, isError = false) {
 
 function setTitleSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("titleSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
+function setCollapseFlagSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("collapseFlagSaveStatus");
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
@@ -165,11 +172,44 @@ function loadTitleText() {
 }
 
 
+
+
+function saveCollapseFlag() {
+
+  try {
+    const collapseFlag = document.getElementById("collapseFlag");
+    const value = collapseFlag ? collapseFlag.checked : false;
+    localStorage.setItem(COLLAPSE_FLAG_STORAGE_KEY, value.toString());
+    setCollapseFlagSaveStatus("Collapse flag saved.");
+  } catch (error) {
+    console.error(error);
+    setCollapseFlagSaveStatus("Failed to save flag.", true);
+  }
+}
+
+function loadCollapseFlag() {
+  try {
+    const value = localStorage.getItem(COLLAPSE_FLAG_STORAGE_KEY);
+    const collapseFlag = document.getElementById("collapseFlag");
+    if (collapseFlag && value !== null) {
+      collapseFlag.checked = value === "true";
+    }
+  } catch (error) {
+    console.error(error);
+    setCollapseFlagSaveStatus("Failed to load flag.", true);
+  }
+}
+
+
+
+
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
 document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
 document.getElementById("saveTitleTextBtn").addEventListener("click", saveTitleText);
+document.getElementById("saveCollapseFlagBtn").addEventListener("click", saveCollapseFlag);
 
 loadMetadataRows();
 loadPrefixText();
 loadTitleText();
+loadCollapseFlag();
