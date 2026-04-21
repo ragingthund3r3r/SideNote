@@ -353,6 +353,9 @@ async function onConfirmClick() {
 }
 
 async function onCancelClick() {
+  
+  clearNoteUi()
+  purgeNoteDraft()
   closeSidePanel();
 }
 
