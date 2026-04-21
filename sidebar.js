@@ -213,6 +213,8 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
   }
   title = await replacePlaceholders(title)
 
+  title = cleanTitle(title)
+
   let doesfileexist = await fileExists(folderHandle, title + extension);
   
   
@@ -259,13 +261,29 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
 
   yaml = await replacePlaceholders(yaml)
 
-  let prefixText = readPrefixText() +"\n\n"
+  let prefixValidEl = document.getElementById("prefixValidity")
+
+  let prefixText
+
+  if (prefixValidEl?.checked) {
+    prefixText = readPrefixText() +"\n\n"
+    
+  } else{
+    prefixText = ""
+    
+  }
+
+
 
   const writable = await fileHandle.createWritable();
   await writable.write(yaml + prefixText + body);
   await writable.close();
 }
 
+function cleanTitle(title) {
+  return title
+    .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
+}
 
 function readPrefixText() {
   try {
