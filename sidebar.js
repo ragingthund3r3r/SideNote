@@ -5,7 +5,7 @@ const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
-
+const NOTE_DRAFT_STORAGE_KEY = "sidenmote.notedraft"
 
 async function refreshAuthorizationStatus() {
   if (!window.showDirectoryPicker) {
@@ -342,6 +342,9 @@ async function onConfirmClick() {
     await createMarkdownFile(authorizedHandle, typedTitle, typedBody);
     setStatus("Created File!");
 
+    clearNoteUi()
+    purgeNoteDraft()
+
     closeSidePanel();
   } catch (error) {
     console.error(error);
@@ -481,18 +484,56 @@ function inputDropHandler(e){
 
 }
 
+
+function loadNoteDraft(){
+
+  try {
+    let value = localStorage.getItem(NOTE_DRAFT_STORAGE_KEY) || "";
+    const noteInput = document.getElementById("fileBodyInput");
+    if (noteInput) {
+      noteInput.value = value;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+}
+
+function saveNoteDraft(){
+  try {
+    const noteInput = document.getElementById("fileBodyInput");
+    const value = noteInput ? noteInput.value : "";
+    localStorage.setItem(NOTE_DRAFT_STORAGE_KEY, value);
+    setStatus("Note saved as a draft");
+  } catch (error) {
+    console.error(error);
+    setStatus("Failed to save note as a draft.", true);
+  }
+}
+
+function purgeNoteDraft(){
+  localStorage.setItem(NOTE_DRAFT_STORAGE_KEY, "");
+}
+
+function clearNoteUi(){
+  const noteInput = document.getElementById("fileBodyInput");
+  noteInput.value = "";
+}
+
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
 document.getElementById("fileTitleInput").addEventListener("input", updateFinalFileName)
 document.getElementById("fileBodyInput").addEventListener("drop", inputDropHandler)
+document.getElementById("fileBodyInput").addEventListener("blur", saveNoteDraft);
 
 async function initializeSidebar() {
   refreshAuthorizationStatus();
   await loadTitleText();
   loadSidebarMetadataRows();
   await updateFinalFileName();
+  loadNoteDraft();
   // 🔴 THIS ALWAYS NEEDS TO BE LAST
   document.getElementById("fileBodyInput").focus();
 }
