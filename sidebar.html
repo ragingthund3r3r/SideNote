@@ -129,6 +129,36 @@
       align-items: center;
       padding-top: 14px;
     }
+
+    .hiddenHover {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .form-group:hover .hiddenHover {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      scrollbar-gutter: stable;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    
   </style>
 </head>
 <body>
@@ -139,6 +169,7 @@
   <h1>📝 SideNote</h1>
   <div class="form-group">
     <input id="fileTitleInput" type="text" placeholder="Enter file title" />
+    <span class="hiddenHover" >Preview: <span class="status" id="finalFileName"></span> </span>
   </div>
 
   <details>

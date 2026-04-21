@@ -295,11 +295,19 @@ function readPrefixText() {
 }
 
 
-function loadTitleText() {
+async function loadTitleText() {
   try {
-    const value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
+    let value = localStorage.getItem(TITLE_STORAGE_KEY) || "";
     const titleInput = document.getElementById("fileTitleInput");
     if (titleInput) {
+
+      if(value == ""){
+        value ="Untitled"
+      }
+      value = await replacePlaceholders(value)
+
+      value = cleanTitle(value)
+
       titleInput.value = value;
     }
   } catch (error) {
@@ -398,11 +406,98 @@ async function replacePlaceholders(template) {
   });
 }
 
+async function updateFinalFileName(){
+  const titleInput = document.getElementById("fileTitleInput");
+
+  let typedTitle = titleInput ? titleInput.value : "";
+
+  console.log("Typed title:", typedTitle);
+
+  if(typedTitle == ""){
+    typedTitle ="Untitled"
+  }
+  typedTitle = await replacePlaceholders(typedTitle)
+
+  typedTitle = cleanTitle(typedTitle)
+
+  const finalNameEl = document.getElementById("finalFileName");
+  finalNameEl.textContent = typedTitle;
+
+}
+
+function inputDropHandler(e){
+
+  e.preventDefault(); 
+
+
+  let uri_list = e.dataTransfer.getData("text/uri-list");
+
+  let finalLink 
+  if(uri_list.length >0){
+
+    let link = e.dataTransfer.getData("text/plain");
+
+    let html = e.dataTransfer.getData("text/html");
+
+    let container = document.createElement("div");
+    container.innerHTML = html;
+
+    let anchor = container.querySelector("a");
+
+    let title = anchor?.textContent.trim() || "_titleNotFound_";
+
+    finalLink =`[${title}](${link})\n`
+
+  }else{
+
+    finalLink = e.dataTransfer.getData("text/plain") + "\n";
+
+  }
+
+
+
+  const target = e.target;
+  if (target.value !== undefined) {
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
+
+    target.value =
+      target.value.slice(0, start) +
+      finalLink +
+      target.value.slice(end);
+
+    target.selectionStart = target.selectionEnd =
+      start + finalLink.length;
+  }
+
+  // console.log(e.dataTransfer.types); // shows all available formats
+
+  // for (const type of e.dataTransfer.types) {
+  //   console.log(type, e.dataTransfer.getData(type));
+  // }
+
+  // console.log("_______________________")
+
+
+}
 
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
-refreshAuthorizationStatus();
-loadTitleText();
-loadSidebarMetadataRows();
+document.getElementById("fileTitleInput").addEventListener("input", updateFinalFileName)
+document.getElementById("fileBodyInput").addEventListener("drop", inputDropHandler)
+
+async function initializeSidebar() {
+  refreshAuthorizationStatus();
+  await loadTitleText();
+  loadSidebarMetadataRows();
+  await updateFinalFileName();
+  // 🔴 THIS ALWAYS NEEDS TO BE LAST
+  document.getElementById("fileBodyInput").focus();
+}
+
+initializeSidebar().catch((error) => {
+  console.error(error);
+  setStatus("Failed to initialize sidebar.", true);
+});
