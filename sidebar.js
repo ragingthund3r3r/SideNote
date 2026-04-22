@@ -618,6 +618,132 @@ function clearNoteUi(){
   noteInput.value = "";
 }
 
+
+
+
+
+
+
+
+
+
+function insertAtCursor(el, text) {
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+
+  const before = el.value.substring(0, start);
+  const after = el.value.substring(end);
+
+  el.value = before + text + after;
+
+  el.selectionStart = el.selectionEnd = start + text.length;
+}
+
+
+function bodyFormatting(e) {
+  const el = e.target;
+
+  function insertAtCursor(text) {
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+
+    const before = el.value.substring(0, start);
+    const after = el.value.substring(end);
+
+    el.value = before + text + after;
+
+    el.selectionStart = el.selectionEnd = start + text.length;
+  }
+
+  // TAB = 4 spaces
+  if (e.key === "Tab") {
+    e.preventDefault();
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const value = el.value;
+
+    const indent = "    ";
+
+    // find start of current line
+    const lineStart = value.lastIndexOf("\n", start - 1) + 1;
+
+    const linePrefix = value.substring(lineStart, lineStart + 4);
+
+    // -------------------------
+    // SHIFT + TAB = UNINDENT
+    // -------------------------
+    if (e.shiftKey) {
+      if (linePrefix === indent) {
+        const before = value.substring(0, lineStart);
+        const after = value.substring(lineStart + 4);
+
+        el.value = before + after;
+
+        const newCursorPos = Math.max(start - 4, lineStart);
+        el.selectionStart = el.selectionEnd = newCursorPos;
+      }
+
+      return;
+    }
+
+    // -------------------------
+    // TAB = INDENT
+    // -------------------------
+    const before = value.substring(0, lineStart);
+    const after = value.substring(lineStart);
+
+    el.value = before + indent + after;
+
+    const newCursorPos = start + indent.length;
+    el.selectionStart = el.selectionEnd = newCursorPos;
+  }
+
+
+  if (e.key === "Enter") {
+    const value = el.value;
+    const cursorPos = el.selectionStart;
+
+    const beforeCursor = value.substring(0, cursorPos);
+    const lastLine = beforeCursor.split("\n").pop();
+
+    const bulletMatch = lastLine.match(/^(\s*[-*•]\s)(.*)/);
+
+    if (bulletMatch) {
+      const bulletPrefix = bulletMatch[1];
+      const contentAfterBullet = bulletMatch[2];
+
+      // -------------------------
+      // EXIT LIST if empty bullet
+      // -------------------------
+      if (contentAfterBullet.trim() === "") {
+        e.preventDefault();
+
+        // insert plain newline (no bullet)
+        const afterCursor = value.substring(cursorPos);
+
+        el.value =
+          value.substring(0, cursorPos) +
+          "\n" +
+          afterCursor;
+
+        el.selectionStart = el.selectionEnd = cursorPos + 1;
+        return;
+      }
+
+      // -------------------------
+      // CONTINUE BULLET
+      // -------------------------
+      e.preventDefault();
+
+      insertAtCursor("\n" + bulletPrefix);
+    }
+  }
+}
+
+
+
+
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
@@ -627,6 +753,7 @@ document.getElementById("fileTitleInput").addEventListener("input", updateFinalF
 document.getElementById("fileTitleInput").addEventListener("input", invalidCharChecker)
 document.getElementById("fileBodyInput").addEventListener("drop", inputDropHandler)
 document.getElementById("fileBodyInput").addEventListener("blur", saveNoteDraft);
+document.getElementById("fileBodyInput").addEventListener("keydown", bodyFormatting);
 
 async function initializeSidebar() {
   refreshAuthorizationStatus();
