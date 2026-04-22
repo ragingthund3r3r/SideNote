@@ -171,13 +171,22 @@
     .editorButton {
       flex: 0 0 auto; 
     }
+    .svgButtons{
+      padding: 0px;
+      padding-left: 1px;
+      padding-right: 1px;
+    }
   </style>
 </head>
 <body>
   <div class="top-bar">
-    <button id="authorizeFsBtn" type="button">Choose folder</button>
-    <span> <h1>📝 SideNote </h1> </span>
-    <button id="placeholderBtn" type="button">Settings</button>
+    <button class="svgButtons" title="Choose Folder" id="authorizeFsBtn" type="button">
+      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-cog-icon lucide-folder-cog"><path d="M10.3 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.98a2 2 0 0 1 1.69.9l.66 1.2A2 2 0 0 0 12 6h8a2 2 0 0 1 2 2v3.3"/><path d="m14.305 19.53.923-.382"/><path d="m15.228 16.852-.923-.383"/><path d="m16.852 15.228-.383-.923"/><path d="m16.852 20.772-.383.924"/><path d="m19.148 15.228.383-.923"/><path d="m19.53 21.696-.382-.924"/><path d="m20.772 16.852.924-.383"/><path d="m20.772 19.148.924.383"/><circle cx="18" cy="18" r="3"/></svg>
+    </button>
+    <span> <h1>SideNote</h1> </span>
+    <button class="svgButtons" title="Settings" id="placeholderBtn" type="button">
+      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
   </div>
   <div class="form-group">
     <input id="fileTitleInput" type="text" placeholder="Enter file title" />
@@ -197,7 +206,9 @@
   </details>
 
   <div class="buttonGroup">
-    <button id="captureSnapshotBtn" class="editorButton" type="button">Snapshot</button>
+    <button class="svgButtons" id="captureSnapshotBtn" title="Snapshot" class="editorButton" type="button">
+      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-focus-icon lucide-focus"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+    </button>
   </div>
 
   <div class="form-group-textarea">
