@@ -280,6 +280,82 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
   await writable.close();
 }
 
+async function dataUrlToBlob(dataUrl) {
+  const response = await fetch(dataUrl);
+  return response.blob();
+}
+
+async function getUniquePngHandle(folderHandle, baseName) {
+  const extension = ".png";
+  let counter = 0;
+  let candidate = `${baseName}${extension}`;
+
+  while (await fileExists(folderHandle, candidate)) {
+    counter += 1;
+    candidate = `${baseName} ${counter}${extension}`;
+  }
+
+  return folderHandle.getFileHandle(candidate, { create: true });
+}
+
+async function saveSnapshotPng(folderHandle, pngDataUrl) {
+  const now = new Date();
+  const isoSafe = now.toISOString().replace(/[.:]/g, "-").replace("Z", "");
+  const baseName = `snapshot-${isoSafe}`;
+
+  const subFolderHandle = await folderHandle.getDirectoryHandle("screenshots", { create: true });
+  const fileHandle = await getUniquePngHandle(subFolderHandle, baseName);
+
+  const blob = await dataUrlToBlob(pngDataUrl);
+  const writable = await fileHandle.createWritable();
+  await writable.write(blob);
+  await writable.close();
+
+  return {
+    baseName,
+    fileName: fileHandle.name
+  };
+
+}
+
+async function onCaptureSnapshotClick() {
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+  setStatus("Capturing viewport...");
+
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "captureVisibleViewport" });
+
+    if (!response || !response.ok || !response.dataUrl) {
+      const errorMessage = response?.error || "Capture failed.";
+      setStatus(errorMessage, true);
+      return;
+    }
+
+
+    const result = await saveSnapshotPng(authorizedHandle, response.dataUrl);
+
+    const fileName = result.fileName
+    const baseName = result.baseName
+
+    setStatus(`Saved snapshot`);
+
+    let imageEmbedd = `\n![[${baseName}]]\n`
+
+    const noteInput = document.getElementById("fileBodyInput");
+    noteInput.value += imageEmbedd;
+
+    noteInput.focus();
+    
+  } catch (error) {
+    console.error(error);
+    setStatus("Failed to capture snapshot.", true);
+  }
+}
+
 function cleanTitle(title) {
   return title
     .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
@@ -543,6 +619,7 @@ function clearNoteUi(){
 }
 
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
+document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);

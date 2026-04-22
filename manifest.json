@@ -15,7 +15,11 @@
   "permissions": [
     "sidePanel",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
 
   "action": {

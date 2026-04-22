@@ -58,6 +58,7 @@
       min-height: 120px;
       resize: vertical;
       height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
     }
     textarea {
       overflow-y: scroll;
@@ -159,14 +160,25 @@
       height: 0;
     }
     
+    .buttonGroup {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 8px; 
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .editorButton {
+      flex: 0 0 auto; 
+    }
   </style>
 </head>
 <body>
   <div class="top-bar">
     <button id="authorizeFsBtn" type="button">Choose folder</button>
+    <span> <h1>📝 SideNote </h1> </span>
     <button id="placeholderBtn" type="button">Settings</button>
   </div>
-  <h1>📝 SideNote</h1>
   <div class="form-group">
     <input id="fileTitleInput" type="text" placeholder="Enter file title" />
     <span class="hiddenHover" >Preview: <span class="status" id="finalFileName"></span> </span>
@@ -184,6 +196,9 @@
     </section>
   </details>
 
+  <div class="buttonGroup">
+    <button id="captureSnapshotBtn" class="editorButton" type="button">Snapshot</button>
+  </div>
 
   <div class="form-group-textarea">
     <textarea id="fileBodyInput" placeholder="Enter file content"></textarea>

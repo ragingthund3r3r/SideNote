@@ -38,6 +38,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "captureVisibleViewport") {
+    (async () => {
+      try {
+        const lastFocusedWindow = await chrome.windows.getLastFocused();
+        const pngDataUrl = await chrome.tabs.captureVisibleTab(lastFocusedWindow.id, { format: "png" });
+        sendResponse({ ok: true, dataUrl: pngDataUrl });
+      } catch (error) {
+        console.error(error);
+        sendResponse({ ok: false, error: error?.message || "Unable to capture visible viewport." });
+      }
+    })();
+
+    return true;
+  }
+
   if (message.action === "sidebarReady") {
     if (pendingAction) {
       // Send any queued action
