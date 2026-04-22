@@ -285,6 +285,21 @@ function cleanTitle(title) {
     .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
 }
 
+function hasInvalidChars(title) {
+  return /[<>:"\/\\|?*\x00-\x1F]/.test(title);
+}
+
+
+
+function invalidCharChecker(){
+  const titleInput = document.getElementById("fileTitleInput");
+  if (hasInvalidChars(titleInput.value)){
+    setStatus("Title has invalid charachters", true)
+  }
+  
+}
+
+
 function readPrefixText() {
   try {
     const value = localStorage.getItem(PREFIX_TEXT_STORAGE_KEY) || "";
@@ -332,6 +347,10 @@ async function onConfirmClick() {
     return
   }
 
+  if(hasInvalidChars(typedTitle)){
+    setStatus("Title has invalid charachters", true)
+    return
+  }
 
   const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
   if (!authorizedHandle) {
@@ -528,6 +547,7 @@ document.getElementById("placeholderBtn").addEventListener("click", onSettingsCl
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
 document.getElementById("fileTitleInput").addEventListener("input", updateFinalFileName)
+document.getElementById("fileTitleInput").addEventListener("input", invalidCharChecker)
 document.getElementById("fileBodyInput").addEventListener("drop", inputDropHandler)
 document.getElementById("fileBodyInput").addEventListener("blur", saveNoteDraft);
 
