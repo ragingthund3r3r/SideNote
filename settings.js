@@ -70,19 +70,29 @@ function createMetadataRow(data = { enabled: true, key: "", value: "" }) {
 
 function getAllRowsData() {
   const rows = Array.from(document.querySelectorAll("#metadataRows .meta-row"));
-
-  return rows.map((row) => {
+  let keyEmptyFlag = false;
+  const data = rows.map((row) => {
     const enabled = row.querySelector(".meta-enabled")?.checked || false;
     const key = row.querySelector(".meta-key")?.value?.trim() || "";
     const value = row.querySelector(".meta-value")?.value || "";
-
+    if (key === "") {
+      keyEmptyFlag = true;
+    }
     return { enabled, key, value };
   });
+  return {
+    data,
+    keyEmptyFlag
+  };
 }
 
 function saveMetadataRows() {
   try {
-    const rows = getAllRowsData();
+    const { data: rows, keyEmptyFlag: flag } = getAllRowsData();
+    if(flag){
+      setSaveStatus("Metadata key cant be empty.", true);
+      return
+    }
     localStorage.setItem(METADATA_STORAGE_KEY, JSON.stringify(rows));
     setSaveStatus("Metadata saved.");
   } catch (error) {
