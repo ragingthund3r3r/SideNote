@@ -561,7 +561,30 @@ async function initializeSidebar() {
   document.getElementById("fileBodyInput").focus();
 }
 
-initializeSidebar().catch((error) => {
-  console.error(error);
-  setStatus("Failed to initialize sidebar.", true);
+initializeSidebar()
+  .then(() => {
+    // notify the background script that we are ready and check for any queued actions
+    chrome.runtime.sendMessage({ action: "sidebarReady" }, (response) => {
+      if (response && response.action === "addToNote") {
+        const textarea = document.getElementById("fileBodyInput");
+        if (textarea) {
+          textarea.value += response.text;
+        }
+      }
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    setStatus("Failed to initialize sidebar.", true);
+  });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "addToNote") {
+    const textarea = document.getElementById("fileBodyInput");
+
+    if (textarea) {
+      textarea.value += message.text;
+    }
+    sendResponse({ status: "Added highlight to sidebar" });
+  }
 });

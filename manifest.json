@@ -14,7 +14,8 @@
 
   "permissions": [
     "sidePanel",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
 
   "action": {
