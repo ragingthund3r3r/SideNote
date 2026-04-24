@@ -6,6 +6,7 @@ const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const NOTE_DRAFT_STORAGE_KEY = "sidenmote.notedraft"
+const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
 
 async function refreshAuthorizationStatus() {
   if (!window.showDirectoryPicker) {
@@ -755,7 +756,17 @@ document.getElementById("fileBodyInput").addEventListener("drop", inputDropHandl
 document.getElementById("fileBodyInput").addEventListener("blur", saveNoteDraft);
 document.getElementById("fileBodyInput").addEventListener("keydown", bodyFormatting);
 
+function applyTheme() {
+  const isDarkMode = localStorage.getItem(DARK_MODE_FLAG_STORAGE_KEY);
+  if (isDarkMode === "false") {
+    document.body.classList.add("light-theme");
+  } else {
+    document.body.classList.remove("light-theme");
+  }
+}
+
 async function initializeSidebar() {
+  applyTheme();
   refreshAuthorizationStatus();
   await loadTitleText();
   loadSidebarMetadataRows();

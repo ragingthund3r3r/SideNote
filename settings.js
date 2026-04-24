@@ -2,6 +2,7 @@ const METADATA_STORAGE_KEY = "sidenote.metadataRows";
 const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
+const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -23,6 +24,12 @@ function setTitleSaveStatus(message, isError = false) {
 
 function setCollapseFlagSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("collapseFlagSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
+function setDarkModeFlagSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("darkModeFlagSaveStatus");
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
@@ -212,14 +219,54 @@ function loadCollapseFlag() {
 
 
 
+function applyTheme() {
+  const isDarkMode = localStorage.getItem(DARK_MODE_FLAG_STORAGE_KEY);
+  if (isDarkMode === "false") {
+    document.body.classList.add("light-theme");
+  } else {
+    document.body.classList.remove("light-theme");
+  }
+}
+
+function saveDarkModeFlag() {
+
+  try {
+    const darkModeFlag = document.getElementById("darkModeFlag");
+    const value = darkModeFlag ? darkModeFlag.checked : false;
+    localStorage.setItem(DARK_MODE_FLAG_STORAGE_KEY, value.toString());
+    setDarkModeFlagSaveStatus("Dark mode flag saved.");
+    applyTheme();
+  } catch (error) {
+    console.error(error);
+    setDarkModeFlagSaveStatus("Failed to save flag.", true);
+  }
+}
+
+function loadDarkModeFlag() {
+  try {
+    const value = localStorage.getItem(DARK_MODE_FLAG_STORAGE_KEY);
+    const darkModeFlag = document.getElementById("darkModeFlag");
+    if (darkModeFlag && value !== null) {
+      darkModeFlag.checked = value === "true";
+    }
+  } catch (error) {
+    console.error(error);
+    setDarkModeFlagSaveStatus("Failed to load flag.", true);
+  }
+}
+
+
 
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
 document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
 document.getElementById("saveTitleTextBtn").addEventListener("click", saveTitleText);
 document.getElementById("saveCollapseFlagBtn").addEventListener("click", saveCollapseFlag);
+document.getElementById("saveDarkModeFlagBtn").addEventListener("click", saveDarkModeFlag);
 
 loadMetadataRows();
 loadPrefixText();
 loadTitleText();
 loadCollapseFlag();
+loadDarkModeFlag();
+applyTheme();

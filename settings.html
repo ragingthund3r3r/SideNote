@@ -40,6 +40,46 @@
       color: #e5e5e5;
     }
 
+    body.light-theme {
+      background: #ffffff;
+      color: #333333;
+    }
+    body.light-theme h1,
+    body.light-theme .section-title,
+    body.light-theme .meta-section-title {
+      color: #333333;
+    }
+    body.light-theme p {
+      color: #666666;
+    }
+    body.light-theme .section,
+    body.light-theme .meta-section {
+      border-color: #dddddd;
+      background: #f9f9f9;
+    }
+    body.light-theme input,
+    body.light-theme textarea,
+    body.light-theme input[type="text"] {
+      border-color: #cccccc;
+      background: #ffffff;
+      color: #333333;
+    }
+    body.light-theme input:focus,
+    body.light-theme textarea:focus {
+      border-color: #5f9cff;
+    }
+    body.light-theme .meta-header {
+      color: #666666;
+    }
+    body.light-theme button {
+      border-color: #cccccc;
+      background: #f0f0f0;
+      color: #333333;
+    }
+    body.light-theme button:hover {
+      background: #e0e0e0;
+    }
+
     .meta-grid {
       display: grid;
       grid-template-columns: 56px minmax(0, 1fr) minmax(0, 3fr) 88px;
@@ -184,6 +224,18 @@
       <button id="saveCollapseFlagBtn" type="button">Save</button>
     </div>
     <div id="collapseFlagSaveStatus"></div>
+  </section>
+
+
+  <section class="section" aria-labelledby="toggle-dark-mode">
+    <h2 id="toggle-dark-mode" class="section-title">Toggle Dark Mode</h2>
+    <p>This decides if it is a dark or light mode</p>
+    <input type="checkbox" id="darkModeFlag" ></input>
+
+    <div class="actions">
+      <button id="saveDarkModeFlagBtn" type="button">Save</button>
+    </div>
+    <div id="darkModeFlagSaveStatus"></div>
   </section>
 
 
