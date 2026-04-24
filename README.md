@@ -53,15 +53,21 @@ https://github.com/user-attachments/assets/c1e7e45e-7367-4941-b2e3-a7c98b6f5624
 ### Option 2: Install from Releases (easier setup)
 
 1. Go to the **Releases** section of this repository.
-2. Download the latest `.zip` file.
-3. Extract the zip file to a folder on your computer.
-4. Open Chrome and go to `chrome://extensions/`.
-5. Enable **Developer mode**.
-6. Click **Load unpacked**.
-7. Select the extracted folder.
-8. Click the SideNote extension icon to open the side panel.
-9. In the panel, click the folder button and authorize a notes directory.
-10. Personal Recommendation: Setup a hotkey to launch SideNote and easily create new notes
+2. Download the latest `.crx` file.
+3. Open Chrome/Edge and go to `chrome://extensions/` or `edge://extensions/`.
+4. Enable **Developer mode** (toggle in the top right).
+5. Drag and drop the downloaded `.crx` file onto the extensions page.
+6. Confirm the installation when prompted.
+
+> ⚠️ If drag-and-drop is blocked by your browser:
+> - Rename the `.crx` file to `.zip`
+> - Extract it to a folder
+> - Click **Load unpacked**
+> - Select the extracted folder
+
+7. Click the SideNote extension icon to open the side panel.
+8. In the panel, click the folder button and authorize a notes directory.
+9. Personal Recommendation: Setup a hotkey to launch SideNote and easily create new notes
 
 ## Development
 
