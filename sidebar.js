@@ -792,6 +792,46 @@ function bodyFormatting(e) {
       insertAtCursor("\n" + bulletPrefix);
     }
   }
+
+  if (e.key === "(") {
+    e.preventDefault();
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+
+    const before = el.value.substring(0, start);
+    const after = el.value.substring(end);
+
+    el.value = before + "()" + after;
+
+    el.selectionStart = el.selectionEnd = start + 1;
+  }
+  if (e.key === "{") {
+    e.preventDefault();
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+
+    const before = el.value.substring(0, start);
+    const after = el.value.substring(end);
+
+    el.value = before + "{}" + after;
+
+    el.selectionStart = el.selectionEnd = start + 1;
+  }
+  if (e.key === "[") {
+    e.preventDefault();
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+
+    const before = el.value.substring(0, start);
+    const after = el.value.substring(end);
+
+    el.value = before + "[]" + after;
+
+    el.selectionStart = el.selectionEnd = start + 1;
+  }
 }
 
 
