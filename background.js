@@ -62,7 +62,60 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse(null);
     }
   }
+
+  if (message.action === "captureTimestamp"){
+  (async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+      const url = tab.url;
+      console.log(url)
+
+      if (!url || !url.startsWith("https://www.youtube.com/")) {
+
+        sendResponse({ ok: false, error: "Invalid or unsupported URL" });
+        return;
+      }
+
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+
+          const el = document.querySelector(".ytp-time-current");
+
+          if (!el) return null;
+          return {
+            text: el.innerText
+          };
+        }
+      });
+
+      let element = results[0].result;
+
+      element = element
+        ? { url, ...element }
+        : null;
+
+      if (!element) {
+        sendResponse({ ok: false, error: "Element not found" });
+        return;
+      }
+
+      sendResponse({ ok: true, element });
+
+    } catch (error) {
+      console.error(error);
+      sendResponse({ ok: false, error: error?.message || "Failed to extract element." });
+    }
+  })();
+
+  return true;
+
+}
 });
+
+
+
 
 /**
 

@@ -357,6 +357,58 @@ async function onCaptureSnapshotClick() {
   }
 }
 
+
+async function onCaptureTimestampClick() {
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "captureTimestamp" });
+
+    if(!response.element.text){
+      return
+    }
+
+    let timestamp = response.element.text
+    let url = response.element.url
+
+    let timeList = timestamp.split(":").map(Number).reverse()
+
+    const multipliers = [1, 60, 3600, 86400];
+
+    const weighted = timeList.map((value, index) => value * multipliers[index]);
+
+    let weightedSum = weighted.reduce((sum, val) => sum + val, 0);
+
+    let finTimeUrl = url + "&t=" + weightedSum
+
+    let finstring = `[${timestamp}](${finTimeUrl})\n`
+
+    const target = document.getElementById("fileBodyInput");
+
+    if (target.value !== undefined) {
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+
+      target.value =
+        target.value.slice(0, start) +
+        finstring +
+        target.value.slice(end);
+
+      target.selectionStart = target.selectionEnd =
+        start + finstring.length;
+    }
+
+
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function cleanTitle(title) {
   return title
     .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
@@ -747,6 +799,7 @@ function bodyFormatting(e) {
 
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
+document.getElementById("captureTimeStampBtn").addEventListener("click", onCaptureTimestampClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
