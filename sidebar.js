@@ -761,8 +761,38 @@ function bodyFormatting(e) {
     const lastLine = beforeCursor.split("\n").pop();
 
     const bulletMatch = lastLine.match(/^(\s*[-*•]\s)(.*)/);
+    const checkboxMatch = lastLine.match(/^(\s*[-*]\s\[\s\]\s)(.*)/);
+    
+    if (checkboxMatch){
+      const checkboxPrefix = checkboxMatch[1];
+      const contentAfterCheckbox = checkboxMatch[2];
 
-    if (bulletMatch) {
+      // -------------------------
+      // EXIT LIST if empty checkbox
+      // -------------------------
+      if (contentAfterCheckbox.trim() === "") {
+        e.preventDefault();
+
+        // insert plain newline (no bullet)
+        const afterCursor = value.substring(cursorPos);
+
+        el.value =
+          value.substring(0, cursorPos) +
+          "\n" +
+          afterCursor;
+
+        el.selectionStart = el.selectionEnd = cursorPos + 1;
+        return;
+      }
+
+      // -------------------------
+      // CONTINUE CHECKBOX
+      // -------------------------
+      e.preventDefault();
+
+      insertAtCursor("\n" + checkboxPrefix);
+
+    } else if (bulletMatch) {
       const bulletPrefix = bulletMatch[1];
       const contentAfterBullet = bulletMatch[2];
 
