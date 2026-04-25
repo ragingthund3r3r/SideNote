@@ -409,6 +409,56 @@ async function onCaptureTimestampClick() {
   }
 }
 
+async function onCaptureAllTabsClick() {
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "captureAllTabs" });
+
+    console.log(response)
+
+    if(!response.tabData){
+      return
+    }
+
+
+    let listOfTabs = "\nTabs in this window:\n"
+
+    for (const tab of response.tabData) {
+      console.log(tab.url);
+      let tabUrl = tab.url
+      let tabTitle = tab.title
+      
+      listOfTabs = listOfTabs + `- [${tabTitle}](${tabUrl})\n`
+       
+    }
+
+    const target = document.getElementById("fileBodyInput");
+
+    if (target.value !== undefined) {
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+
+      target.value =
+        target.value.slice(0, start) +
+        listOfTabs +
+        target.value.slice(end);
+
+      target.selectionStart = target.selectionEnd =
+        start + listOfTabs.length;
+    }
+
+
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function cleanTitle(title) {
   return title
     .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
@@ -870,6 +920,7 @@ function bodyFormatting(e) {
 document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFolderAccess);
 document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
 document.getElementById("captureTimeStampBtn").addEventListener("click", onCaptureTimestampClick);
+document.getElementById("captureAllTabsInWindowBtn").addEventListener("click", onCaptureAllTabsClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
