@@ -111,7 +111,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   return true;
 
-}
+  }
+
+  if (message.action === "openSidePanel") {
+    if (sender.tab && sender.tab.id !== undefined) {
+      chrome.sidePanel.open({ tabId: sender.tab.id });
+    }
+  }
+
 });
 
 

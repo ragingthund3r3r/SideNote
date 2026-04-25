@@ -3,6 +3,7 @@ const PREFIX_TEXT_STORAGE_KEY = "sidenote.prefixText";
 const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
+const TOAST_FLAG_STORAGE_KEY = "sidenote.toastFlag";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -33,6 +34,13 @@ function setDarkModeFlagSaveStatus(message, isError = false) {
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
+
+function setToastFlagSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("toastFlagSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
 
 function createMetadataRow(data = { enabled: true, key: "", value: "" }) {
   const row = document.createElement("div");
@@ -256,6 +264,32 @@ function loadDarkModeFlag() {
 }
 
 
+function saveToastFlag() {
+
+  try {
+    const toastFlag = document.getElementById("toastFlag");
+    const value = toastFlag ? toastFlag.checked : false;
+    localStorage.setItem(TOAST_FLAG_STORAGE_KEY, value.toString());
+    chrome.storage.local.set({ toastFlag: value });
+    setToastFlagSaveStatus("Toast flag saved.");
+  } catch (error) {
+    console.error(error);
+    setToastFlagSaveStatus("Failed to save flag.", true);
+  }
+}
+
+function loadToastFlag() {
+  try {
+    const value = localStorage.getItem(TOAST_FLAG_STORAGE_KEY);
+    const toastFlag = document.getElementById("toastFlag");
+    if (toastFlag && value !== null) {
+      toastFlag.checked = value === "true";
+    }
+  } catch (error) {
+    console.error(error);
+    setToastFlagSaveStatus("Failed to load flag.", true);
+  }
+}
 
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
@@ -263,10 +297,12 @@ document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefi
 document.getElementById("saveTitleTextBtn").addEventListener("click", saveTitleText);
 document.getElementById("saveCollapseFlagBtn").addEventListener("click", saveCollapseFlag);
 document.getElementById("saveDarkModeFlagBtn").addEventListener("click", saveDarkModeFlag);
+document.getElementById("saveToastFlagBtn").addEventListener("click", saveToastFlag);
 
 loadMetadataRows();
 loadPrefixText();
 loadTitleText();
 loadCollapseFlag();
 loadDarkModeFlag();
+loadToastFlag();
 applyTheme();
