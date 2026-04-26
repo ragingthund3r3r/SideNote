@@ -7,6 +7,8 @@ const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const NOTE_DRAFT_STORAGE_KEY = "sidenmote.notedraft"
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
+let notesCursor = 0;
+const PAGE_SIZE = 10;
 
 async function refreshAuthorizationStatus() {
   if (!window.showDirectoryPicker) {
@@ -459,6 +461,96 @@ async function onCaptureAllTabsClick() {
   }
 }
 
+async function onRetrivePastTenNotes() {
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+  let folderHandle = await getStoredHandle()
+
+  const parent = document.getElementById("pastNotes");
+
+  const files = [];
+
+  for await (const [name, entry] of folderHandle.entries()) {
+    if (entry.kind === 'file' && name.endsWith('.md')) {
+      const file = await entry.getFile();
+
+      files.push({
+        name,
+        file,
+        lastModified: file.lastModified
+      });
+    }
+  }
+
+  files.sort((a, b) => b.lastModified - a.lastModified);
+
+  const nextBatch = files.slice(notesCursor, notesCursor + PAGE_SIZE);
+
+  notesCursor += PAGE_SIZE;
+  
+
+  for (const item of nextBatch) {
+    let text = await item.file.text();
+    console.log(item.name, text);
+
+
+
+    text = text.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '')
+  
+
+    const noteDiv = document.createElement("div");
+    noteDiv.className = "note";
+
+    const title = document.createElement("h3");
+    title.textContent = item.name.replace(".md", "");
+
+    const body = document.createElement("p");
+    body.textContent = text;
+
+    noteDiv.appendChild(title);
+    noteDiv.appendChild(body);
+
+    parent.appendChild(noteDiv);
+  }
+}
+
+function populateCurrentNoteIntoPast(currTitle, currBody) {
+  let populateTitle = currTitle
+  let populateBody = currBody
+
+  if (notesCursor = 0){
+    return
+  }
+  let value = localStorage.getItem(COLLAPSE_FLAG_STORAGE_KEY);
+      
+  let collapseFlag = value === "true";
+
+  if(!collapseFlag){
+    return
+  }
+
+
+  const parent = document.getElementById("pastNotes");
+
+  const noteDiv = document.createElement("div");
+  noteDiv.className = "note";
+
+  const title = document.createElement("h3");
+  title.textContent = populateTitle
+
+  const body = document.createElement("p");
+  body.textContent = populateBody;
+
+  noteDiv.appendChild(title);
+  noteDiv.appendChild(body);
+
+  parent.prepend(noteDiv);
+
+}
+
 function cleanTitle(title) {
   return title
     .replace(/[<>:"\/\\|?*\x00-\x1F]/g, "")
@@ -542,6 +634,8 @@ async function onConfirmClick() {
 
     clearNoteUi()
     purgeNoteDraft()
+    populateCurrentNoteIntoPast(typedTitle, typedBody)
+    loadTitleText()
 
     closeSidePanel();
   } catch (error) {
@@ -921,6 +1015,7 @@ document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFol
 document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
 document.getElementById("captureTimeStampBtn").addEventListener("click", onCaptureTimestampClick);
 document.getElementById("captureAllTabsInWindowBtn").addEventListener("click", onCaptureAllTabsClick);
+document.getElementById("retrivePastTenNotes").addEventListener("click", onRetrivePastTenNotes);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);

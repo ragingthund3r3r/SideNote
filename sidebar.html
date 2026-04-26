@@ -82,6 +82,10 @@
       background: #e0e0e0;
     }
 
+    body.light-theme .note {
+      border-color: #cccccc;
+      background: #ffffff;
+    }
     input,
     textarea {
       border: 1px solid #3e3e3e;
@@ -214,6 +218,29 @@
       padding-left: 1px;
       padding-right: 1px;
     }
+
+
+    .note {
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #3e3e3e;
+      border-radius: 8px;
+      background: #2a2a2a;
+    }
+
+    .note h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+
+    .note p {
+      margin: 0;
+      white-space: pre-wrap; 
+    }
+    .pastNotesHolder {
+      margin-top: 15px;
+    }
+
   </style>
 </head>
 <body>
@@ -253,6 +280,9 @@
     <button class="svgButtons" id="captureAllTabsInWindowBtn" title="All Tabs" class="editorButton" type="button">
       <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-app-window-icon lucide-app-window"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/></svg>
     </button>
+    <button class="svgButtons" id="retrivePastTenNotes" title="Retrive Notes" class="editorButton" type="button">
+      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history-icon lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+    </button>
   </div>
 
   <div class="form-group-textarea">
@@ -271,6 +301,13 @@
 
     <button id="cancelBtn" type="button">Cancel</button>
   </div>
+
+  <details class="pastNotesHolder">
+    <summary id="pastnotes-summary" class="meta-section-title">Past-Notes</summary>
+    <div id="pastNotes" class="past-notes">
+  
+    </div>
+  </details>
   <script src="date-fns.umd.min.js"></script>
   <script src="sidebar.js"></script>
 </body>
