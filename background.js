@@ -142,6 +142,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   }
   
+  if (message.action === "captureCurrentTab"){
+    (async () => {
+      try {
+
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+
+        const tab = tabs[0]; 
+
+        const tabData = {
+          title: tab?.title,
+          url: tab?.url
+        };
+
+        sendResponse({ tabData });
+
+      } catch (error) {
+        console.error(error);
+        sendResponse({ ok: false, error: error?.message || "Failed to extract tab." });
+      }
+    })();
+
+    return true;
+
+  }
+
 });
 
 

@@ -466,6 +466,49 @@ async function onCaptureAllTabsClick() {
   }
 }
 
+
+async function onCaptureThisTabClick() {
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "captureCurrentTab" });
+
+    console.log(response)
+
+    if(!response.tabData){
+      return
+    }
+
+
+    let finString = `\n\n[${response.tabData.title}](${response.tabData.url})\n`
+
+
+    const target = document.getElementById("fileBodyInput");
+
+    if (target.value !== undefined) {
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+
+      target.value =
+        target.value.slice(0, start) +
+        finString +
+        target.value.slice(end);
+
+      target.selectionStart = target.selectionEnd =
+        start + finString.length;
+    }
+
+
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function onRetrivePastTenNotes() {
   const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
   if (!authorizedHandle) {
@@ -1020,6 +1063,7 @@ document.getElementById("authorizeFsBtn").addEventListener("click", authorizeFol
 document.getElementById("captureSnapshotBtn").addEventListener("click", onCaptureSnapshotClick);
 document.getElementById("captureTimeStampBtn").addEventListener("click", onCaptureTimestampClick);
 document.getElementById("captureAllTabsInWindowBtn").addEventListener("click", onCaptureAllTabsClick);
+document.getElementById("captureThisTabBtn").addEventListener("click", onCaptureThisTabClick);
 document.getElementById("retrivePastTenNotes").addEventListener("click", onRetrivePastTenNotes);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
