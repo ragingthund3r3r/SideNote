@@ -7,6 +7,7 @@ const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const NOTE_DRAFT_STORAGE_KEY = "sidenmote.notedraft"
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
+const PREFIX_FLAG_STORAGE_KEY = "sidenote.prefixFlag";
 let notesCursor = 0;
 const PAGE_SIZE = 10;
 
@@ -276,6 +277,10 @@ async function createMarkdownFile(folderHandle, paramtitle, parambody= "") {
     
   }
 
+  const isPrefixDisabled = localStorage.getItem(PREFIX_FLAG_STORAGE_KEY);
+  if (isPrefixDisabled === "true") {
+    prefixText = ""
+  } 
 
 
   const writable = await fileHandle.createWritable();
@@ -521,7 +526,7 @@ function populateCurrentNoteIntoPast(currTitle, currBody) {
   let populateTitle = currTitle
   let populateBody = currBody
 
-  if (notesCursor = 0){
+  if (notesCursor == 0){
     return
   }
   let value = localStorage.getItem(COLLAPSE_FLAG_STORAGE_KEY);

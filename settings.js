@@ -4,6 +4,7 @@ const TITLE_STORAGE_KEY = "sidenote.titleText";
 const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
 const TOAST_FLAG_STORAGE_KEY = "sidenote.toastFlag";
+const PREFIX_FLAG_STORAGE_KEY = "sidenote.prefixFlag";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -41,6 +42,11 @@ function setToastFlagSaveStatus(message, isError = false) {
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
 
+function setPrefixFlagSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("prefixFlagSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
 
 function createMetadataRow(data = { enabled: true, key: "", value: "" }) {
   const row = document.createElement("div");
@@ -291,6 +297,33 @@ function loadToastFlag() {
   }
 }
 
+function savePrefixFlag() {
+
+  try {
+    const prefixFlag = document.getElementById("prefixFlag");
+    const value = prefixFlag ? prefixFlag.checked : false;
+    localStorage.setItem(PREFIX_FLAG_STORAGE_KEY, value.toString());
+    chrome.storage.local.set({ prefixFlag: value });
+    setPrefixFlagSaveStatus("Prefix flag saved.");
+  } catch (error) {
+    console.error(error);
+    setPrefixFlagSaveStatus("Failed to save flag.", true);
+  }
+}
+
+function loadPrefixFlag() {
+  try {
+    const value = localStorage.getItem(PREFIX_FLAG_STORAGE_KEY);
+    const prefixFlag = document.getElementById("prefixFlag");
+    if (prefixFlag && value !== null) {
+      prefixFlag.checked = value === "true";
+    }
+  } catch (error) {
+    console.error(error);
+    setPrefixFlagSaveStatus("Failed to load flag.", true);
+  }
+}
+
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
 document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
@@ -298,6 +331,7 @@ document.getElementById("saveTitleTextBtn").addEventListener("click", saveTitleT
 document.getElementById("saveCollapseFlagBtn").addEventListener("click", saveCollapseFlag);
 document.getElementById("saveDarkModeFlagBtn").addEventListener("click", saveDarkModeFlag);
 document.getElementById("saveToastFlagBtn").addEventListener("click", saveToastFlag);
+document.getElementById("savePrefixFlagBtn").addEventListener("click", savePrefixFlag);
 
 loadMetadataRows();
 loadPrefixText();
@@ -305,4 +339,5 @@ loadTitleText();
 loadCollapseFlag();
 loadDarkModeFlag();
 loadToastFlag();
+loadPrefixFlag();
 applyTheme();
