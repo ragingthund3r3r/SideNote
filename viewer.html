@@ -11,6 +11,7 @@
       --text-color: #dadada;
       --accent-color: #4a9eff;
       --border-color: #333;
+      --input-bg: #2a2a2a;
     }
 
     body.light-theme {
@@ -20,6 +21,7 @@
       --text-color: #333333;
       --accent-color: #0066cc;
       --border-color: #ddd;
+      --input-bg: #ffffff;
     }
 
     body {
@@ -83,6 +85,8 @@
       background-color: var(--bg-color);
       padding: 30px 40px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
     .left h3 {
@@ -134,11 +138,29 @@
     }
 
     #noteHolder .noteBody {
-      font-size: 1rem;
-      line-height: 1.6;
-      white-space: pre-wrap;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
       color: var(--text-color);
-      opacity: 0.9;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      outline: none;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      resize: vertical;
+      font-family: inherit;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    #noteHolder .noteBody:focus {
+      border-color: var(--accent-color);
+    }
+
+    #noteHolder .noteBody::-webkit-scrollbar {
+      display: none;
     }
 
     .empty-state {
@@ -169,6 +191,6 @@
     </div>
   </div>
 
-  <script src="viewer.js"></script>
+  <script type="module" src="viewer.js"></script>
 </body>
 </html>
