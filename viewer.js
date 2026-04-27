@@ -232,6 +232,80 @@ function bodyFormatting(e) {
   }
 }
 
+async function fileExists(folderHandle, name) {
+  try {
+    await folderHandle.getFileHandle(name);
+    return true;  
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return false; 
+    }
+    throw error; 
+  }
+}
+
+async function saveFile(fileName) {
+
+  let markdownInput = document.getElementById("noteBodyInternal")
+  let typedMarkdown = markdownInput ? markdownInput.value : "";
+
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+  console.log("i am inside the save function")
+  console.log(fileName)
+  let doesfileexist = await fileExists(authorizedHandle, fileName);
+
+  
+  if(doesfileexist) {
+    let fileHandle = await authorizedHandle.getFileHandle(fileName, { create: false });
+
+    console.log("the file indeed does exist, so we have retrived its filehandle")
+    const writable = await fileHandle.createWritable();
+
+    await writable.write(typedMarkdown);
+    await writable.close();
+    
+    const newFileObj = await fileHandle.getFile();
+    const allFileList = document.getElementById("allFileList");
+    for (const btn of allFileList.children) {
+      if (btn.textContent === fileName) {
+        btn._updatedFile = newFileObj;
+        break;
+      }
+    }
+  }
+}
+
+async function deleteFile(fileName) {
+
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+  let doesfileexist = await fileExists(authorizedHandle, fileName);
+
+  if(doesfileexist) {
+    await authorizedHandle.removeEntry(fileName);
+
+    const allFileList = document.getElementById("allFileList");
+    for (const btn of allFileList.children) {
+      if (btn.textContent === fileName) {
+        btn.remove();
+        break;
+      }
+    }
+
+    const noteHolder = document.getElementById("noteHolder");
+    if (noteHolder) {
+      noteHolder.innerHTML = '<div class="empty-state">Select a file to view its content</div>';
+    }
+  }
+
+}
 
 async function loadHandle() {
 
@@ -270,7 +344,8 @@ async function loadHandle() {
         document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
         div.classList.add('active');
 
-        const text = await item.file.text()
+        const currentFile = div._updatedFile || item.file;
+        const text = await currentFile.text();
         console.log("Opened file:", item.name);
         console.log(text);
         const noteHolder = document.getElementById("noteHolder");
@@ -296,6 +371,7 @@ async function loadHandle() {
         
         const rightHalf = document.createElement("div");
         rightHalf.id = "renderedHtml"
+        rightHalf.classList.add("renderedHtmlClass")
         rightHalf.style.flex = "1";
         rightHalf.innerHTML = marked.parse(text.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, ''));
 
@@ -317,8 +393,10 @@ async function loadHandle() {
 
         const button1 = document.createElement("button");
         button1.textContent = "Save";
+        button1.className = "theme-toggle";
         const button2 = document.createElement("button");
         button2.textContent = "Delete";
+        button2.className = "theme-toggle";
 
         buttonRow.appendChild(button1);
         buttonRow.appendChild(button2);
@@ -327,6 +405,8 @@ async function loadHandle() {
         noteBody.addEventListener("input", refreshRenderedMarkdown);
         noteBody.addEventListener("keydown", bodyFormatting);
 
+        button1.addEventListener("click", () => saveFile(item.name));
+        button2.addEventListener("click", () => deleteFile(item.name));
     });
 
     output.appendChild(div);
