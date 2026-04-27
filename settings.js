@@ -5,6 +5,7 @@ const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
 const TOAST_FLAG_STORAGE_KEY = "sidenote.toastFlag";
 const PREFIX_FLAG_STORAGE_KEY = "sidenote.prefixFlag";
+const DEL_COLL_TABS_FLAG_STORAGE_KEY = "sidenote.deleteCollapsedTabsFileFlag";
 
 function setSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("saveStatus");
@@ -44,6 +45,12 @@ function setToastFlagSaveStatus(message, isError = false) {
 
 function setPrefixFlagSaveStatus(message, isError = false) {
   const saveStatus = document.getElementById("prefixFlagSaveStatus");
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
+}
+
+function setDelCollTabsFlagSaveStatus(message, isError = false) {
+  const saveStatus = document.getElementById("delCollTabsFlagSaveStatus");
   saveStatus.textContent = message;
   saveStatus.style.color = isError ? "#ff8f8f" : "#9fd59f";
 }
@@ -324,6 +331,34 @@ function loadPrefixFlag() {
   }
 }
 
+function saveCollapseDeleteFlag() {
+
+  try {
+    const delCollTabsFlag = document.getElementById("delCollTabsFlag");
+    const value = delCollTabsFlag ? delCollTabsFlag.checked : false;
+    localStorage.setItem(DEL_COLL_TABS_FLAG_STORAGE_KEY, value.toString());
+    chrome.storage.local.set({ delCollTabsFlag: value });
+    setDelCollTabsFlagSaveStatus("File delete flag saved.");
+  } catch (error) {
+    console.error(error);
+    setDelCollTabsFlagSaveStatus("Failed to save flag.", true);
+  }
+}
+
+function loadCollapseDeleteFlag() {
+  try {
+    const value = localStorage.getItem(DEL_COLL_TABS_FLAG_STORAGE_KEY);
+    const delCollTabsFlag = document.getElementById("delCollTabsFlag");
+    if (delCollTabsFlag && value !== null) {
+      delCollTabsFlag.checked = value === "true";
+    }
+  } catch (error) {
+    console.error(error);
+    setDelCollTabsFlagSaveStatus("Failed to load flag.", true);
+  }
+}
+
+
 document.getElementById("addMetadataRowBtn").addEventListener("click", addMetadataRow);
 document.getElementById("saveMetadataBtn").addEventListener("click", saveMetadataRows);
 document.getElementById("savePrefixTextBtn").addEventListener("click", savePrefixText);
@@ -332,6 +367,7 @@ document.getElementById("saveCollapseFlagBtn").addEventListener("click", saveCol
 document.getElementById("saveDarkModeFlagBtn").addEventListener("click", saveDarkModeFlag);
 document.getElementById("saveToastFlagBtn").addEventListener("click", saveToastFlag);
 document.getElementById("savePrefixFlagBtn").addEventListener("click", savePrefixFlag);
+document.getElementById("saveDelCollTabsFlagBtn").addEventListener("click", saveCollapseDeleteFlag);
 
 loadMetadataRows();
 loadPrefixText();
@@ -340,4 +376,5 @@ loadCollapseFlag();
 loadDarkModeFlag();
 loadToastFlag();
 loadPrefixFlag();
+loadCollapseDeleteFlag();
 applyTheme();

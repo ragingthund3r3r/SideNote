@@ -565,6 +565,73 @@ async function onRetrivePastTenNotes() {
   }
 }
 
+async function onCompressAllTabsInWindowClick() {
+
+  chrome.runtime.sendMessage({ action: "openNewTab" });
+
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+  const tabsSubFolderHandle = await authorizedHandle.getDirectoryHandle("tabsCompressed", { create: true });
+
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "captureAllTabs" });
+
+    // console.log(response)
+
+    if(!response.tabData){
+      return
+    }
+
+    let listOfTabs = ""
+
+    for (const tab of response.tabData) {
+      console.log(tab.url);
+      let tabUrl = tab.url
+      listOfTabs = listOfTabs + `${tabUrl}\n`
+    }
+    // console.log(listOfTabs)
+
+    const encoder = new TextEncoder();
+    const timestamp = new Date().toISOString();
+    const data = encoder.encode(listOfTabs + timestamp);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const bytes = new Uint8Array(hashBuffer);
+
+    let shortHash = Array.from(bytes).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    // console.log(shortHash)
+
+    let extension = ".md"
+    fileHandle = await tabsSubFolderHandle.getFileHandle(shortHash + extension, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(listOfTabs);
+    await writable.close();
+
+    const target = document.getElementById("fileBodyInput");
+
+    let createdUrl = chrome.runtime.getURL("restore.html") + "#" + shortHash;
+    if (target.value !== undefined) {
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+
+      target.value =
+        target.value.slice(0, start) +
+        createdUrl +
+        target.value.slice(end);
+
+      target.selectionStart = target.selectionEnd =
+        start + createdUrl.length;
+    }
+
+    chrome.runtime.sendMessage({ action: "closeOtherTabs" });
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function populateCurrentNoteIntoPast(currTitle, currBody) {
   let populateTitle = currTitle
   let populateBody = currBody
@@ -1065,6 +1132,7 @@ document.getElementById("captureTimeStampBtn").addEventListener("click", onCaptu
 document.getElementById("captureAllTabsInWindowBtn").addEventListener("click", onCaptureAllTabsClick);
 document.getElementById("captureThisTabBtn").addEventListener("click", onCaptureThisTabClick);
 document.getElementById("retrivePastTenNotes").addEventListener("click", onRetrivePastTenNotes);
+document.getElementById("compressAllTabsInWidow").addEventListener("click", onCompressAllTabsInWindowClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);

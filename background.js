@@ -167,6 +167,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   }
 
+  if (message.action === "openNewTab") {
+    chrome.tabs.create({
+      url: "chrome://newtab" 
+    });
+  }
+
+  if (message.action === "closeOtherTabs") {
+    chrome.tabs.query({ currentWindow: true }, (tabs) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (activeTabs) => {
+        const activeTabId = activeTabs[0]?.id;
+
+        const tabsToClose = tabs
+          .filter(tab => tab.id !== activeTabId)
+          .map(tab => tab.id);
+
+        if (tabsToClose.length > 0) {
+          chrome.tabs.remove(tabsToClose);
+        }
+      });
+    });
+  }
+  
 });
 
 
