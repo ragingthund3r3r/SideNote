@@ -17,6 +17,8 @@ Think of SideNote as a lite version of obsidian that you can run in your browser
 
 https://github.com/user-attachments/assets/c1e7e45e-7367-4941-b2e3-a7c98b6f5624
 
+https://github.com/user-attachments/assets/7e93c93c-e8f4-4565-91d5-5118294be674
+
 
 
 
