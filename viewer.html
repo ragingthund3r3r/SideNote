@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>File Explorer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 16px;
+      margin: 0;
+      background: #1e1e1e;
+      color: #dadada;
+      min-height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh; 
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+    }
+
+    .left {
+      flex: 1; 
+      background-color: #f4f4f4;
+      background-color: #1e1e1e;
+      padding: 20px;
+    }
+
+    .right {
+      flex: 3;
+      background-color: #ddd;
+      background-color: #181818;
+      padding: 20px;
+    }
+
+    .filelist {
+        height: 80vh;
+        overflow-y: auto;
+        padding: 10px;
+        background: #181818;
+        color: #e0e0e0;
+        font-family: sans-serif;
+
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .filelist::-webkit-scrollbar {
+        display: none;
+    }
+
+  .file-item {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: #1e1e1e;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .file-item:hover {
+    background: #2a2a2a;
+  }
+
+
+
+    body.light-theme {
+      background: #ffffff;
+      color: #333333;
+    }
+    p {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      white-space: pre-wrap; 
+
+    }
+  </style>
+</head>
+<body>
+  <h1>File Explorer</h1>
+
+
+
+  <div id="output"></div>
+
+  <div class="container">
+    <div class="left">
+      <div class="filelist" id="allFileList">
+        <h3>All Files</h3>
+      </div>
+    </div>
+    <div id="noteHolder" class="right">
+    </div>
+  </div>
+
+  <script src="viewer.js"></script>
+
+
+
+</body>
+</html>

@@ -632,6 +632,19 @@ async function onCompressAllTabsInWindowClick() {
   }
 }
 
+async function openFileExplorerClick() {
+
+  const authorizedHandle = await ensureStoredHandleAuthorizedWithoutPicker();
+  if (!authorizedHandle) {
+    return;
+  }
+
+  const newTab = await chrome.tabs.create({
+    url: chrome.runtime.getURL("viewer.html")
+  });
+
+}
+
 function populateCurrentNoteIntoPast(currTitle, currBody) {
   let populateTitle = currTitle
   let populateBody = currBody
@@ -1133,6 +1146,7 @@ document.getElementById("captureAllTabsInWindowBtn").addEventListener("click", o
 document.getElementById("captureThisTabBtn").addEventListener("click", onCaptureThisTabClick);
 document.getElementById("retrivePastTenNotes").addEventListener("click", onRetrivePastTenNotes);
 document.getElementById("compressAllTabsInWidow").addEventListener("click", onCompressAllTabsInWindowClick);
+document.getElementById("openFileExplorer").addEventListener("click", openFileExplorerClick);
 document.getElementById("placeholderBtn").addEventListener("click", onSettingsClick);
 document.getElementById("confirmBtn").addEventListener("click", onConfirmClick);
 document.getElementById("cancelBtn").addEventListener("click", onCancelClick);
