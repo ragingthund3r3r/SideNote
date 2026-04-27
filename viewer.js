@@ -84,7 +84,10 @@ async function loadHandle() {
     div.className = "file-item";
     div.textContent = item.name;
 
-    div.addEventListener("click", async () => {
+        div.addEventListener("click", async () => {
+        document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+        div.classList.add('active');
+
         const text = await item.file.text()
         console.log("Opened file:", item.name);
         console.log(text);
@@ -103,14 +106,25 @@ async function loadHandle() {
 
         noteHolder.appendChild(noteBody);
 
-
- 
     });
 
     output.appendChild(div);
   }
+}
 
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    const savedTheme = localStorage.getItem('sidenote-theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.textContent = 'Dark Mode';
+    }
 
+    themeToggle.addEventListener('click', () => {
+        const isLight = document.body.classList.toggle('light-theme');
+        themeToggle.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+        localStorage.setItem('sidenote-theme', isLight ? 'light' : 'dark');
+    });
 }
 
 loadHandle();

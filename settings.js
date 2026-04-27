@@ -241,20 +241,51 @@ function loadCollapseFlag() {
 
 
 function applyTheme() {
-  const isDarkMode = localStorage.getItem(DARK_MODE_FLAG_STORAGE_KEY);
-  if (isDarkMode === "false") {
+  const isDarkMode = localStorage.getItem("sidenote-theme") !== "light"; 
+  const legacyDarkMode = localStorage.getItem(DARK_MODE_FLAG_STORAGE_KEY); 
+
+  if (legacyDarkMode === "false" || localStorage.getItem("sidenote-theme") === "light") {
     document.body.classList.add("light-theme");
   } else {
     document.body.classList.remove("light-theme");
   }
+
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    if (document.body.classList.contains("light-theme")) {
+      themeToggle.textContent = 'Dark Mode';
+    } else {
+      themeToggle.textContent = 'Light Mode';
+    }
+  }
+
+  const darkModeFlag = document.getElementById("darkModeFlag");
+  if(darkModeFlag) {
+       darkModeFlag.checked = !document.body.classList.contains("light-theme");
+  }
+}
+
+const themeToggleBtn = document.getElementById('themeToggle');
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        const isLight = document.body.classList.toggle('light-theme');
+        themeToggleBtn.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+        localStorage.setItem('sidenote-theme', isLight ? 'light' : 'dark');
+        localStorage.setItem(DARK_MODE_FLAG_STORAGE_KEY, (!isLight).toString());
+        
+        const darkModeFlag = document.getElementById("darkModeFlag");
+        if(darkModeFlag) {
+            darkModeFlag.checked = !isLight;
+        }
+    });
 }
 
 function saveDarkModeFlag() {
-
   try {
     const darkModeFlag = document.getElementById("darkModeFlag");
     const value = darkModeFlag ? darkModeFlag.checked : false;
     localStorage.setItem(DARK_MODE_FLAG_STORAGE_KEY, value.toString());
+    localStorage.setItem("sidenote-theme", value ? "dark" : "light");
     setDarkModeFlagSaveStatus("Dark mode flag saved.");
     applyTheme();
   } catch (error) {

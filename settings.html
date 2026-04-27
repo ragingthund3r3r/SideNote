@@ -2,94 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Settings</title>
+  <title>SideNote - Settings</title>
   <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --panel-bg: #181818;
+      --hover-bg: #2a2a2a;
+      --text-color: #dadada;
+      --accent-color: #4a9eff;
+      --border-color: #3e3e3e;
+      --input-bg: #2a2a2a;
+      --section-bg: #242424;
+      --text-muted: #b3b3b3;
+    }
+
+    body.light-theme {
+      --bg-color: #f4f4f4;
+      --panel-bg: #ffffff;
+      --hover-bg: #e8e8e8;
+      --text-color: #333333;
+      --accent-color: #0066cc;
+      --border-color: #dddddd;
+      --input-bg: #ffffff;
+      --section-bg: #f9f9f9;
+      --text-muted: #666666;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
       margin: 0;
-      background: #1e1e1e;
-      color: #dadada;
+      background: var(--bg-color);
+      color: var(--text-color);
       min-height: 100vh;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--panel-bg);
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-color);
     }
 
-    h1 {
-      font-size: 18px;
-      margin-top: 0;
-      color: #dadada;
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
     }
+
+    .theme-toggle:hover {
+      background: var(--hover-bg);
+    }
+
+    .content-container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h1, h2 {
+      color: var(--text-color);
+    }
+
     p {
-      color: #b3b3b3;
+      color: var(--text-muted);
       font-size: 14px;
     }
 
     .section {
-      border: 1px solid #3e3e3e;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 12px;
-      background: #242424;
+      padding: 16px;
+      background: var(--section-bg);
       margin-top: 14px;
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .section-title {
       margin: 0 0 8px 0;
       font-size: 15px;
-      color: #e5e5e5;
-    }
-
-    body.light-theme {
-      background: #ffffff;
-      color: #333333;
-    }
-    body.light-theme h1,
-    body.light-theme .section-title,
-    body.light-theme .meta-section-title {
-      color: #333333;
-    }
-    body.light-theme p {
-      color: #666666;
-    }
-    body.light-theme .section,
-    body.light-theme .meta-section {
-      border-color: #dddddd;
-      background: #f9f9f9;
-    }
-    body.light-theme input,
-    body.light-theme textarea,
-    body.light-theme input[type="text"] {
-      border-color: #cccccc;
-      background: #ffffff;
-      color: #333333;
-    }
-    body.light-theme input:focus,
-    body.light-theme textarea:focus {
-      border-color: #5f9cff;
-    }
-    body.light-theme .meta-header {
-      color: #666666;
-    }
-    body.light-theme button {
-      border-color: #cccccc;
-      background: #f0f0f0;
-      color: #333333;
-    }
-    body.light-theme button:hover {
-      background: #e0e0e0;
+      color: var(--text-color);
     }
 
     .meta-grid {
       display: grid;
       grid-template-columns: 56px minmax(0, 1fr) minmax(0, 3fr) 88px;
-
       gap: 8px;
       align-items: center;
     }
 
     .meta-header {
-      color: #b3b3b3;
+      color: var(--text-muted);
       font-size: 12px;
       margin-bottom: 8px;
     }
@@ -103,26 +125,28 @@
       padding: 8px 6px;
     }
 
-    input[type="text"] {
-      border: 1px solid #3e3e3e;
-      background: #2a2a2a;
-      color: #f2f2f2;
+    input[type="text"], textarea {
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-color);
       border-radius: 6px;
       padding: 8px 10px;
       font-size: 13px;
       width: 100%;
       box-sizing: border-box;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+
+    input[type="text"]::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
     }
 
     textarea {
-      border: 1px solid #3e3e3e;
-      background: #2a2a2a;
-      color: #f2f2f2;
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-size: 13px;
-      width: 100%;
-      box-sizing: border-box;
       min-height: 120px;
       resize: vertical;
     }
@@ -139,27 +163,21 @@
     }
 
     button {
-      border: 1px solid #3e3e3e;
-      background: #2a2a2a;
-      color: #f2f2f2;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-color);
       border-radius: 6px;
-      padding: 8px 10px;
+      padding: 8px 12px;
       font-size: 13px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     button:hover {
-      background: #343434;
+      background: var(--hover-bg);
     }
 
-    #saveStatus {
-      color: #9fd59f;
-      font-size: 12px;
-      margin-top: 8px;
-      min-height: 16px;
-    }
-
-    #prefixSaveStatus {
+    [id$="Status"] {
       color: #9fd59f;
       font-size: 12px;
       margin-top: 8px;
@@ -170,7 +188,12 @@
 </head>
 <body>
 
-  <h1> Settings</h1>
+  <header>
+    <h1>Settings</h1>
+    <button id="themeToggle" class="theme-toggle">Light Mode</button>
+  </header>
+
+  <div class="content-container">
 
   <section class="section" aria-labelledby="full-title">
     <h2 id="full-title" class="section-title">Title</h2>
@@ -269,10 +292,9 @@
     </div>
     <div id="delCollTabsFlagSaveStatus"></div>
   </section>
+  </div>
 
   <script src="settings.js"></script>
-
-
 
 </body>
 </html>

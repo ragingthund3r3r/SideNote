@@ -4,38 +4,103 @@
   <meta charset="UTF-8" />
   <title>SideNote</title>
   <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --panel-bg: #181818;
+      --hover-bg: #2a2a2a;
+      --text-color: #dadada;
+      --accent-color: #4a9eff;
+      --border-color: #3e3e3e;
+      --input-bg: #2a2a2a;
+      --section-bg: #242424;
+      --text-muted: #b3b3b3;
+    }
+
+    body.light-theme {
+      --bg-color: #f4f4f4;
+      --panel-bg: #ffffff;
+      --hover-bg: #e8e8e8;
+      --text-color: #333333;
+      --accent-color: #0066cc;
+      --border-color: #dddddd;
+      --input-bg: #ffffff;
+      --section-bg: #f9f9f9;
+      --text-muted: #666666;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
       margin: 0;
-      background: #1e1e1e;
-      color: #dadada;
+      background: var(--bg-color);
+      color: var(--text-color);
       min-height: 100vh;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
+      transition: background 0.3s, color 0.3s;
     }
-    .top-bar {
+
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--panel-bg);
       margin-bottom: 14px;
     }
-    h1 {
-      font-size: 18px;
-      margin-top: 0;
-      color: #dadada;
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--hover-bg);
+    }
+
+    .content-container {
+      padding: 0 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    h1, h2 {
+      color: var(--text-color);
+    }
+
     p {
-      color: #b3b3b3;
+      color: var(--text-muted);
       font-size: 14px;
     }
+
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 6px;
       margin-bottom: 12px;
     }
+
     .form-group-textarea {
       display: flex;
       flex-direction: column;
@@ -44,66 +109,26 @@
       height: 50vh;
     }
 
-    body.light-theme {
-      background: #ffffff;
-      color: #333333;
-    }
-    body.light-theme h1,
-    body.light-theme .meta-section-title {
-      color: #333333;
-    }
-    body.light-theme p {
-      color: #666666;
-    }
-    body.light-theme .meta-section {
-      border-color: #dddddd;
-      background: #f9f9f9;
-    }
-    body.light-theme input,
-    body.light-theme textarea,
-    body.light-theme input[type="text"] {
-      border-color: #cccccc;
-      background: #ffffff;
-      color: #333333;
-    }
-    body.light-theme input:focus,
-    body.light-theme textarea:focus {
-      border-color: #5f9cff;
-    }
-    body.light-theme .meta-header {
-      color: #666666;
-    }
-    body.light-theme button {
-      border-color: #cccccc;
-      background: #f0f0f0;
-      color: #333333;
-    }
-    body.light-theme button:hover {
-      background: #e0e0e0;
-    }
-
-    body.light-theme .note {
-      border-color: #cccccc;
-      background: #ffffff;
-    }
-    input,
-    textarea {
-      border: 1px solid #3e3e3e;
-      background: #2a2a2a;
-      color: #f2f2f2;
+    input, textarea {
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-color);
       border-radius: 6px;
       padding: 8px 10px;
       font-size: 13px;
       outline: none;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
     }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent-color);
+    }
+
     textarea {
       min-height: 120px;
       resize: vertical;
       height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
-    }
-    textarea {
-      overflow-y: scroll;
+      font-family: inherit;
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
@@ -111,60 +136,71 @@
     textarea::-webkit-scrollbar {
       display: none;
     }
-    input:focus,
-    textarea:focus {
-      border-color: #5f9cff;
-    }
+
     .meta-section {
-      border: 1px solid #3e3e3e;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      background: #242424;
+      background: var(--section-bg);
       padding: 10px;
       margin-bottom: 12px;
+      transition: background 0.3s, border-color 0.3s;
     }
+
     .meta-section-title {
       margin: 0 0 8px 0;
       font-size: 14px;
-      color: #e5e5e5;
+      color: var(--text-color);
+      cursor: pointer;
     }
+
     .meta-grid {
       display: grid;
       grid-template-columns: 20px minmax(0, 1fr) minmax(0, 3fr);
       gap: 8px;
       align-items: center;
     }
+
     .meta-header {
-      color: #b3b3b3;
+      color: var(--text-muted);
       font-size: 12px;
       margin-bottom: 8px;
     }
+
     .meta-row {
       margin-bottom: 8px;
     }
+
     .checkbox-wrap {
       display: flex;
       justify-content: center;
     }
+
     .meta-key-readonly {
       opacity: 0.85;
+      color: var(--text-color);
     }
+
     button {
-      border: 1px solid #3e3e3e;
-      background: #2a2a2a;
-      color: #f2f2f2;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-color);
       border-radius: 6px;
       padding: 8px 10px;
       font-size: 13px;
       cursor: pointer;
+      transition: all 0.2s;
     }
+
     button:hover {
-      background: #343434;
+      background: var(--hover-bg);
     }
+
     .status {
       margin-top: 10px;
       font-size: 12px;
       color: #757575;
     }
+
     .bottom-bar {
       margin-top: auto;
       display: flex;
@@ -177,15 +213,13 @@
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.2s ease;
+      color: var(--text-muted);
+      font-size: 12px;
     }
 
     .form-group:hover .hiddenHover {
       visibility: visible;
       opacity: 1;
-    }
-
-    html {
-      scrollbar-gutter: stable;
     }
 
     html, body {
@@ -196,8 +230,7 @@
       scrollbar-width: none;
     }
 
-    html::-webkit-scrollbar,
-    body::-webkit-scrollbar {
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
       width: 0;
       height: 0;
     }
@@ -209,41 +242,58 @@
       gap: 8px; 
       align-items: center;
       margin-bottom: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
     }
+
+    .buttonGroup::-webkit-scrollbar {
+      display: none;
+    }
+
     .editorButton {
       flex: 0 0 auto; 
     }
-    .svgButtons{
-      padding: 0px;
-      padding-left: 1px;
-      padding-right: 1px;
+
+    .svgButtons {
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
+    .svgButtons svg {
+      stroke: var(--accent-color);
+    }
 
     .note {
       padding: 12px;
       margin-bottom: 10px;
-      border: 1px solid #3e3e3e;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      background: #2a2a2a;
+      background: var(--input-bg);
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .note h3 {
       margin: 0 0 6px 0;
       font-size: 16px;
+      color: var(--text-color);
     }
 
     .note p {
       margin: 0;
       white-space: pre-wrap; 
+      color: var(--text-color);
     }
+
     .pastNotesHolder {
       margin-top: 15px;
     }
+
     .past-notes {
       height: 350px;
       overflow-y: auto;
-
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
@@ -251,19 +301,25 @@
     .past-notes::-webkit-scrollbar {
       display: none;
     }
-
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <button class="svgButtons" title="Choose Folder" id="authorizeFsBtn" type="button">
-      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-cog-icon lucide-folder-cog"><path d="M10.3 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.98a2 2 0 0 1 1.69.9l.66 1.2A2 2 0 0 0 12 6h8a2 2 0 0 1 2 2v3.3"/><path d="m14.305 19.53.923-.382"/><path d="m15.228 16.852-.923-.383"/><path d="m16.852 15.228-.383-.923"/><path d="m16.852 20.772-.383.924"/><path d="m19.148 15.228.383-.923"/><path d="m19.53 21.696-.382-.924"/><path d="m20.772 16.852.924-.383"/><path d="m20.772 19.148.924.383"/><circle cx="18" cy="18" r="3"/></svg>
-    </button>
-    <span> <h1>SideNote</h1> </span>
-    <button class="svgButtons" title="Settings" id="placeholderBtn" type="button">
-      <svg style="padding:2px" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ab2fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
-    </button>
-  </div>
+  <header>
+    <div class="header-left">
+      <button class="svgButtons" title="Choose Folder" id="authorizeFsBtn" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-cog"><path d="M10.3 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.98a2 2 0 0 1 1.69.9l.66 1.2A2 2 0 0 0 12 6h8a2 2 0 0 1 2 2v3.3"/><path d="m14.305 19.53.923-.382"/><path d="m15.228 16.852-.923-.383"/><path d="m16.852 15.228-.383-.923"/><path d="m16.852 20.772-.383.924"/><path d="m19.148 15.228.383-.923"/><path d="m19.53 21.696-.382-.924"/><path d="m20.772 16.852.924-.383"/><path d="m20.772 19.148.924.383"/><circle cx="18" cy="18" r="3"/></svg>
+      </button>
+      <h1>SideNote</h1>
+    </div>
+    <div class="header-right">
+      <button id="themeToggle" class="theme-toggle">Light</button>
+      <button class="svgButtons" title="Settings" id="placeholderBtn" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="content-container">
   <div class="form-group">
     <input id="fileTitleInput" type="text" placeholder="Enter file title" />
     <span class="hiddenHover" >Preview: <span class="status" id="finalFileName"></span> </span>
@@ -328,6 +384,7 @@
   
     </div>
   </details>
+  </div>
   <script src="date-fns.umd.min.js"></script>
   <script src="sidebar.js"></script>
 </body>

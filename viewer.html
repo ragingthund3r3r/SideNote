@@ -2,107 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>File Explorer</title>
+  <title>SideNote - Explorer</title>
   <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --panel-bg: #181818;
+      --hover-bg: #2a2a2a;
+      --text-color: #dadada;
+      --accent-color: #4a9eff;
+      --border-color: #333;
+    }
+
+    body.light-theme {
+      --bg-color: #f4f4f4;
+      --panel-bg: #ffffff;
+      --hover-bg: #e8e8e8;
+      --text-color: #333333;
+      --accent-color: #0066cc;
+      --border-color: #ddd;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
       margin: 0;
-      background: #1e1e1e;
-      color: #dadada;
-      min-height: 100vh;
-      box-sizing: border-box;
+      background: var(--bg-color);
+      color: var(--text-color);
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--panel-bg);
     }
     
-    body {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100vh; 
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--hover-bg);
     }
 
     .container {
       display: flex;
       flex: 1;
+      overflow: hidden;
     }
 
     .left {
-      flex: 1; 
-      background-color: #f4f4f4;
-      background-color: #1e1e1e;
-      padding: 20px;
+      width: 280px;
+      background-color: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
     }
 
     .right {
-      flex: 3;
-      background-color: #ddd;
-      background-color: #181818;
-      padding: 20px;
+      flex: 1;
+      background-color: var(--bg-color);
+      padding: 30px 40px;
+      overflow-y: auto;
+    }
+
+    .left h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-color);
+      opacity: 0.7;
+      padding: 15px 20px 10px;
+      margin: 0;
     }
 
     .filelist {
-        height: 80vh;
-        overflow-y: auto;
-        padding: 10px;
-        background: #181818;
-        color: #e0e0e0;
-        font-family: sans-serif;
-
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 10px 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    
     .filelist::-webkit-scrollbar {
-        display: none;
+      display: none;
     }
 
-  .file-item {
-    padding: 8px 10px;
-    margin-bottom: 6px;
-    background: #1e1e1e;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .file-item:hover {
-    background: #2a2a2a;
-  }
-
-
-
-    body.light-theme {
-      background: #ffffff;
-      color: #333333;
+    .file-item {
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      background: transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    p {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
-      white-space: pre-wrap; 
 
+    .file-item:hover, .file-item.active {
+      background: var(--hover-bg);
+      color: var(--accent-color);
+    }
+
+    #noteHolder .noteTitle {
+      font-size: 2rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    #noteHolder .noteBody {
+      font-size: 1rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: var(--text-color);
+      opacity: 0.9;
+    }
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-color);
+      opacity: 0.5;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
-  <h1>File Explorer</h1>
-
-
-
-  <div id="output"></div>
+  <header>
+    <h1>Explorer</h1>
+    <button id="themeToggle" class="theme-toggle">Light Mode</button>
+  </header>
 
   <div class="container">
     <div class="left">
+      <h3>Files</h3>
       <div class="filelist" id="allFileList">
-        <h3>All Files</h3>
       </div>
     </div>
     <div id="noteHolder" class="right">
+      <div class="empty-state">Select a file to view its content</div>
     </div>
   </div>
 
   <script src="viewer.js"></script>
-
-
-
 </body>
 </html>

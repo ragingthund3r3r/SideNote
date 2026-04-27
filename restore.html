@@ -2,38 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Restore</title>
+  <title>SideNote - Restore</title>
   <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --panel-bg: #181818;
+      --hover-bg: #2a2a2a;
+      --text-color: #dadada;
+      --accent-color: #4a9eff;
+      --border-color: #3e3e3e;
+      --input-bg: #2a2a2a;
+    }
+
+    body.light-theme {
+      --bg-color: #f4f4f4;
+      --panel-bg: #ffffff;
+      --hover-bg: #e8e8e8;
+      --text-color: #333333;
+      --accent-color: #0066cc;
+      --border-color: #dddddd;
+      --input-bg: #ffffff;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
       margin: 0;
-      background: #1e1e1e;
-      color: #dadada;
+      background: var(--bg-color);
+      color: var(--text-color);
       min-height: 100vh;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
+      transition: background 0.3s, color 0.3s;
     }
 
-
-    body.light-theme {
-      background: #ffffff;
-      color: #333333;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--panel-bg);
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-color);
     }
 
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
 
+    .theme-toggle:hover {
+      background: var(--hover-bg);
+    }
+
+    .content-container {
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
+
+    .editorButton {
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-color);
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .editorButton:hover {
+      background: var(--hover-bg);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
   </style>
 </head>
 <body>
 
-    <button class="svgButtons" id="restoreTabs" title="Restore Notes" class="editorButton" type="button">
+  <header>
+    <h1>Restore Tabs</h1>
+    <button id="themeToggle" class="theme-toggle">Light Mode</button>
+  </header>
+
+  <div class="content-container">
+    <button class="editorButton" id="restoreTabs" title="Restore Notes" type="button">
       Restore Notes
     </button>
+  </div>
 
   <script src="restore.js"></script>
-
-
 
 </body>
 </html>

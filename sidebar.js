@@ -8,6 +8,33 @@ const COLLAPSE_FLAG_STORAGE_KEY = "sidenote.collapseFlag";
 const NOTE_DRAFT_STORAGE_KEY = "sidenmote.notedraft"
 const DARK_MODE_FLAG_STORAGE_KEY = "sidenote.darkModeFlag";
 const PREFIX_FLAG_STORAGE_KEY = "sidenote.prefixFlag";
+function applyTheme() {
+  const savedTheme = localStorage.getItem('sidenote-theme');
+  const legacyDarkMode = localStorage.getItem('sidenote.darkModeFlag');
+  
+  if (savedTheme === 'light' || legacyDarkMode === 'false') {
+      document.body.classList.add('light-theme');
+  } else {
+      document.body.classList.remove('light-theme');
+  }
+}
+
+applyTheme();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.textContent = document.body.classList.contains('light-theme') ? 'Dark Mode' : 'Light Mode';
+        
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-theme');
+            themeToggle.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+            localStorage.setItem('sidenote-theme', isLight ? 'light' : 'dark');
+            localStorage.setItem('sidenote.darkModeFlag', (!isLight).toString());
+        });
+    }
+});
+
 let notesCursor = 0;
 const PAGE_SIZE = 10;
 
